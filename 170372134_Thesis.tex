@@ -1,0 +1,1266 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{bbding}
+\usepackage{changepage}
+\usepackage{lipsum}
+\usepackage[margin = 1.5in,includefoot]{geometry}
+\usepackage{commath}
+\usepackage{hyperref}
+%\usepackage{graphics}
+\onehalfspacing % this sets spacing to 1.5 
+\usepackage[title]{appendix}
+
+\title{Momentum Investing in Emerging Currencies}
+\author{Abbas.Mahmood }
+\date{January 2022}
+\usepackage{indentfirst}
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+        \vspace{-2cm}
+Mathematics MSc Dissertation MMTHM038, 2021/22
+		\\
+        \Huge
+        \textbf{Momentum Investing in Emerging Currencies}
+        \\        
+        \vspace{0.4cm}
+   
+        \vspace{0.5cm}   
+        \LARGE
+        \textbf{Muhammad Abbas Mahmood, ID 170372134}
+        \\
+        \large Supervisor: Prof.\ Pedro Vegrel
+        \\
+        \vspace{0.9cm}
+        \includegraphics[scale=0.3]{Graphs/QMUL_Crest.jpg}
+        \\
+        \vspace{0.9cm}        
+        \LARGE 
+        A thesis presented for the degree of\\
+        Master of Science in \emph{MSC Data Analytics}\\
+        \vspace{0.7cm}        
+        \Large
+        School of Mathematical Sciences\\ 
+        Queen Mary University of London \\
+    \end{center}
+\end{titlepage}
+
+\chapter*{Declaration of original work}
+\begin{flushright}
+This declaration is made on January 19, 2022.
+\end{flushright}
+
+
+{\bf Student's Declaration:}
+I, Abbas Mahmood, hereby declare that the work in this thesis 
+is my original work. I have not copied from any other students' work, work of 
+mine submitted elsewhere,  or from any other sources except where due reference or acknowledgement is made explicitly in the text, nor has any part been written for me by another person.
+
+Referenced text has been flagged by:
+\begin{enumerate}
+\item Using italic fonts, {\bf and} % LaTeX: {\it text}  
+\item using quotation marks ``\ldots '', {\bf and}
+\item explicitly mentioning the source in the text.
+\end{enumerate}
+
+\maketitle
+\begin{abstract}
+    This paper examines the performance of cross-sectional based momentum strategies in the emerging foreign exchange market, looking at different combinations of holding and formation periods ranging from 1 to 12 months. These strategies have been back-tested over a sample spanning from 1999 until 2021, and produce impressive excess returns even after accounting for transaction costs. This paper also explores the effect of weighting momentum based investments and it is found that allocation based on individual currencies' past returns can improve performance significantly. A factor model is constructed using market risk factors in an attempt to explain the emerging currency returns and it is found that these market factors can explain some of the variation in market returns.
+\end{abstract}
+\newpage
+\tableofcontents
+\newpage
+\section{Introduction}
+ 
+ The idea behind momentum in finance is that the past trend of an asset can be indicative of its future price and that past performance tends to persist in the future. Strategies based on the concept of momentum have been documented to produce significantly positive returns across all major asset classes. Geczy et al.(2017) studied cross-sectional momentum-based strategies with a back-test of over two centuries, and show that they produce significant returns in the financial markets. In addition, Hurst et al.(2017) also perform a similar back-test focusing on time-series momentum strategies and show that they produce positive average returns in each decade since 1880. These studies are a few of the many that have provided a strong case for the prevalence of momentum profitability.\\
+ 
+ 
+ 
+ Fama (1970) proposed the efficient market hypothesis which states that and all information is reflected by an assets price making it impossible to consistently generate profitable trades. Fama was of the belief that while short-term profitable opportunities may arise, an investor cannot outperform the market on a consistent basis over the longer term.  An implication of this theory is that market movements must be random and as a result strategies like momentum which is based on past performance should not do a good job at predicting future performance. \\
+ 
+ However, the prevalence of profitable momentum based strategies contradicts this theory, as these returns should be cancelled out over the long-term. This has led many to question the efficiency of these markets and to understand reasons behind these returns. There has been much disagreement over the years as academics attempt to understand and explain these returns. Both risk-based and behaviour-based explanations have been presented in an attempt to explain the profitability of these strategies, however; it seems as though an explanation has not yet been settled upon.\\
+
+This paper provides a contemporary analysis of the performance of momentum based strategies focusing specifically on emerging market currencies. \\
+
+\newpage
+\section{Literature Review}
+
+The basic idea of a momentum-based strategies is to buy high performing assets and sell low performing assets. Performance of these assets are determined by some measure of past performance, most commonly returns, over a fixed formation period. The standard approach in the literature is a cross-sectional approach, whereby performance is measured relative to other assets in the cross-section. A portfolio is then formed where an investor would buy the highest performing assets and sell the lowest performing assets.\\
+
+Jegadeesh and Titman (1993) were the first to document their exploration of cross-sectional momentum-based strategies in the US equity market over a sample period spanning from 1965 to 1989. Their first paper in 1993 found that these strategies were able to produce annualized returns of up to 16.9\%. This paper was followed up in 2001 where they considered an out-of-sample back test and reported a 1.39\% per month out-performance of high momentum compared to low momentum returns, verifying their previous results. Moreover, they found that momentum strategies perform best with holding periods of 3-12 months and that returns reverse over a longer horizon. This is also confirmed in more recent studies as Menkhoff et al(2012) show that momentum performance decreases as holding periods increase.\\
+
+They explained these momentum returns using behavioural theories, attributing this effect to investor overreaction to short-term information subsequently causing prices to deviate from their fundamental value. Conrad and Kaul confirm the positive performance of momentum strategies over a short term and also find that a contrarian strategy performs well over a longer-term horizon. They however disagree with Jagadeesh and Titman in explaining these results as they thought that strategies based on past returns are completely random and that profits are generated due to individual assets dispersion from the cross-sectional average.\\
+
+Asness et al.(2013) extend the literature by confirming the profitability of both value and momentum-based strategies across all major asset classes. They find a positive correlation between momentum strategies across asset classes and explain this to signify the presence of global common factors as drivers of momentum returns. They suggest that this type of correlation structure contradicts behavioural models as performance is related globally across different asset classes. This is also confirmed by Moskowitz et al.(2012) who find that absolute momentum strategies are effective across different, diverse asset classes.
+
+M.Griffin et al.(2003) showed the profitability of momentum globally in the equity markets, confirming that profits reverse over a long term horizon of 1-5 years after formation. They show that profits are prevalent in both good and bad economic states and concluded that macroeconomic risk factors do not explain momentum returns.\\
+
+In a more recent research paper from Grobys et al. (2017) find that momentum strategies exhibit higher returns in higher global economic risk states and suggest that momentum profits can be explained by macroeconomic risk, disagreeing with M.Griffin et al. They find weak co-movement of profits among different countries implying that if momentum is driven by risk then the risk must be country-specific rather than global.\\
+
+Menkhoff et al.(2012) investigate the performance of momentum in the FX market by examining a cross-section of 48 currency pairs including both major and minor pairs. They find that the profitability of these strategies are comparable to the performance in equities and that they can yield annual returns of up to 10\%. \\
+
+Additionally, they report that momentum portfolios are skewed towards minors with higher transaction costs. They explain that due to the high reward opportunities, there exists high risk in the form of transaction costs to compensate for this. \\
+
+Another type of momentum which is typically considered in the literature is referred to as 'trend following'. This method relies on idiosyncratic performance as opposed to cross-sectional performance to determine which assets are bought and which are sold. Moskowitz  et al.(2012) investigate these trend following strategies and find that there is a significant relationship between time series and cross-sectional momentum and even find correlation between the two across different asset classes, suggesting that these strategies are very similar and can be explained by the same factors.\\
+
+Furthermore, they find that significant returns are produced in the first 1-12 months and that returns reverse after 12 months over a longer horizon which is similar to the findings on cross-sectional momentum based strategies, providing further evidence for behavioural theory explanations. Furthermore, They also conclude that performance is stronger in more extreme markets suggesting that there may be macroeconomic factors present in these economies that are responsible for driving momentum.\\
+
+The dynamic of the foreign exchange market differs compared to that of equities. Taylor and Allen (1992) conducted a survey among foreign exchange dealers and found that 64.3\% of traders relied on moving averages and/or trend-following systems and technical analysts had more authority in these dealerships to execute positions compared to economists. They showed that technical analysis is more popular for day to day trading whereas fundamental analysis is favoured for longer-term trading. Most respondents expressed their belief that both fundamental and technical analysis are complimentary and can be used together to inform investment decisions. \\
+
+
+Okunev et al.(2003) examine the performance of technical FX trading strategies, focusing on moving average strategies over an eight currency sample, and find that these technical analysis-based strategies are able produce positive excess returns. This highlights that there exists inefficiencies in the foreign exchange market which can be exploited through these strategies. Shleifer and Summer(1990) examine these inefficiencies and explain them to be a result of initial noise caused by traders reaction to information which push the price away from its true value, leading to other traders ‘jumping on the bandwagon’ further driving the price. They also they highlight the fact that central banks intervene in their currencies exchange rates in order to manage their economies. This intervention goes against the idea that markets are fully efficient and fluctuate randomly as they are clearly directly influenced.\\
+
+Menkhoff et al.(2012) compared these technical strategies to cross-sectional momentum strategies and find that cross-sectional momentum outperforms technical analysis-based strategies and find that there exists little correlation between the two. \\
+
+Moreover, examining momentum performance in foreign exchange, Menkhoff et al.(2012) find that these strategies lack correlation with the carry trade and suggest that momentum returns cannot be explained by the same risk factors that might explain the carry trade. This implies that interest rate differentials are not responsible for positive momentum performance. Zhuang et al.(2018) confirm this finding and also find that incorporating volatility into foreign exchange momentum improves performance. They however conclude that FX momentum cannot be explained by typical risk based explanations.\\
+
+
+The rest of the paper is structured as follows. Section 3 explains the experiment process implemented in this paper and the data used. Section 4 presents results and analysis for the momentum strategies. Section 5 outlines the construction of market factors in addition to results for a factor model. Section 6 provides robustness checks. Section 7 presents a discussion of the findings and provides a conclusion.
+
+\section{Methodology and Data}
+
+\subsection{Universe Selection}
+The objective of this section is to construct a set of criteria that will allow us to quantitatively group emerging countries. While there exists much ambiguity over the classification of countries, it is commonly agreed upon that emerging countries experience high levels of economic growth over a sustained period. Various economists have proposed definitions over the years.
+Robert E. Hoskisson et al.(2000) considers an emerging country as one that has a rapid pace of economic development and has a government that seeks and strives towards economic liberalization and a free market system.
+Vladimir Kvint(2009) gives his idea of an emerging country to be one where its society is transitioning from a dictatorship to a free-market-oriented economy, with an expanding middle class and increasing standards of living.\\
+
+Different definitions are also provided from an investment perspective. For example, Morgan Stanley Capital International (MSCI) defines a framework which classifies countries based on economic development, size, liquidity and market accessibility. Banco Bilbao Vizcaya Argentaria (BBVA) take an approach based on a mixture of size and growth measures.\\
+
+In a recent paper by Biliang Hu et al.(2021), the authors highlight the issues that exist in current emerging market classifications, explaining how different definitions have been provided from both investment and economic perspectives. They put forward a new concept of emerging markets based on various development theories and factor analysis which focuses on five key dimensions: economic size, economic growth, socioeconomic structure, institutional environment and development impetus.\\
+
+In this paper, the selection of emerging countries are based on 3 key features of these economies; size, growth and socioeconomic structure. We wish to include the countries Specifically, for a given year $i$, a country $k$ is included in our universe if it satisifies the follwing three criteria: 
+
+\begin{equation}
+    GDP^k_{i-1} > GDP^{World}_{i-1} \times 0.2\%
+\end{equation}
+\\
+\begin{equation}
+    \frac{GDP^k_{i-1}-GDP^k_{i-11}}{GDP^k_{i-11}} > \frac{GDP^{World}_{i-1}-GDP^{World}_{i-11}}{GDP^{World}_{i-11}} + 20\%
+\end{equation}
+\\
+\begin{equation}
+    GNI^k_{i-1} > GNI^{World}_{i-1} \times 2.5
+\end{equation}
+
+Criteria 1 is imposed to ensure that countries with extremely small GDPs are removed since emerging countries must have high production to facilitate their high growth. Criteria 2 ensures that the countries included have a sustained high level of growth relative to the world. Criteria 3 aims to eliminate countries that are high income from the selection, since emerging countries tend to be low income. This is by no means a perfect selection of emerging countries; however, it captures some of the main features of an emerging market which is satisfactory for the focus of this paper. 
+
+Countries that are classified as emerging are labelled in Table \ref{EmergingTable}. On average, 14 countries fulfill the criteria each year. The 16 countries\footnote{List of 16 countries: Brazil, Chile, China, Colombia, Egypt, India, Indonesia, Malaysia, Mexico, Peru, the Philippines, Poland, Russia, South Africa, Thailand, and Turkey} that are widely regarded by more than 70\% of research institutions as being emerging economies, are also included in our list of as emerging countries which gives us a good level of confidence in our choice of criteria. \\
+
+Five countries (Egypt, Myanmar, Iraq, Iran and Venezuela) that did satisfy the emerging country criteria at some point during our sample period were excluded from consideration due to various major issues that directly impacted their exchange rates. The Egyptian Pound, Myanmar Kyat and Iraqi Dinar were all devalued at some point during our sample period. Iran's multi-layered exchange rate system, which was in place during the earlier part of our sample period, made it difficult to obtain accurate quote rates for their currency. Venezuela experienced hyperinflation during the sample period, which lead to an abandonment of their currency, and as a result were also removed.
+
+
+\begin{table}[p]
+\vspace{-2cm}
+  \caption{This table displays the countries which were classified as emerging for each year in the sample period (1999-2020), based on the criteria outlined for emerging countries in the methodology.}
+  \begin{adjustwidth}{-3cm}{}
+   \resizebox{1.4\textwidth}{!}
+ {
+ \centering
+    \begin{tabular}{|l|rrrrrrrrrrrrrrrrrrrrrr}
+    \toprule
+    \multicolumn{1}{r}{} & 99    & \multicolumn{1}{l}{00} & \multicolumn{1}{l}{01} & \multicolumn{1}{l}{02} & \multicolumn{1}{l}{03} & \multicolumn{1}{l}{04} & \multicolumn{1}{l}{05} & \multicolumn{1}{l}{06} & \multicolumn{1}{l}{07} & \multicolumn{1}{l}{08} & \multicolumn{1}{l}{09} & \multicolumn{1}{l}{10} & \multicolumn{1}{l}{11} & \multicolumn{1}{l}{12} & \multicolumn{1}{l}{13} & \multicolumn{1}{l}{14} & \multicolumn{1}{l}{15} & \multicolumn{1}{l}{16} & \multicolumn{1}{l}{17} & \multicolumn{1}{l}{18} & \multicolumn{1}{l}{19} & \multicolumn{1}{l}{20} \\
+    \toprule
+\cmidrule{1-1}    \textbf{Algeria} &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Argentina} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Bangladesh} &       &       &       &       &       &       &       &       &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} \\
+\toprule
+\cmidrule{1-1}    \textbf{Brazil} &       &       &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Chile} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       & \multicolumn{1}{c}{\Checkmark} &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &  \\
+\toprule
+\cmidrule{1-1}    \textbf{China} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} \\
+\toprule
+\cmidrule{1-1}    \textbf{Colombia} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Czech Republic} &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Greece} &       &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       &       &       &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Hungary} &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       &       &       &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{India} &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} \\
+\toprule
+\cmidrule{1-1}    \textbf{Indonesia} &       &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} \\
+\toprule
+\cmidrule{1-1}    \textbf{Israel} &       &       &       &       &       &       &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} \\
+\toprule
+\cmidrule{1-1}    \textbf{Kazakhstan} &       &       &       &       &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       & \multicolumn{1}{c}{\Checkmark} &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Korea, Rep.} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} \\
+\toprule
+\cmidrule{1-1}    \textbf{Malaysia} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Mexico} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       &       &       &       &       &       &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{New Zealand} &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       & \multicolumn{1}{c}{\Checkmark} &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Nigeria} &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Pakistan} &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} \\
+\toprule
+\cmidrule{1-1}    \textbf{Peru} &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} \\
+\toprule
+\cmidrule{1-1}    \textbf{Philippines} &       &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} \\
+\toprule
+\cmidrule{1-1}    \textbf{Poland} &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Portugal} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       &       &       &       &       &       &       &       &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Romania} &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       & \multicolumn{1}{c}{\Checkmark} \\
+\toprule
+\cmidrule{1-1}    \textbf{Russia} &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{South Africa} &       &       &       &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Thailand} &       &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} \\
+\toprule
+\cmidrule{1-1}    \textbf{Turkey} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Ukraine} &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} &       &       &       &       &       &  \\
+\toprule
+\cmidrule{1-1}    \textbf{Vietnam} &       &       &       &       &       &       &       &       &       &       &       &       &       &       & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} & \multicolumn{1}{c}{\Checkmark} \\
+\cmidrule{1-1}    
+\toprule
+\textbf{TOTAL} & 9     & 9     & 9     & 9     & 6     & 9     & 11    & 12    & 12    & 19    & 19    & 17    & 21    & 23    & 23    & 22    & 19    & 18    & 13    & 12    & 13    & 12 \\
+\bottomrule
+    \end{tabular}%
+    }
+    \end{adjustwidth}
+  \label{EmergingTable}%
+\end{table}%
+
+\subsection{Return Calculations}
+Returns are calculated from the perspective of a U.S investor holding foreign currency k.
+All currencies are quoted against the US Dollar, so that an increase in value of the foreign currency against the USD is reflected by a positive spot return. Let $s^k_{t}$ denote the spot price for currency $k$ against the $USD$, the spot return over some period $p$ at time $t$ is calculated by the following:
+$$Spot\;return;\qquad \Delta{}s^k_{t} = \frac{s^k_{t}-s^k_{t-p}}{s^k_{t-p}}$$
+
+ Excess returns are then considered by including the interest rate differential component of returns in our calculation. By borrowing US Dollars and holding foreign currency $k$, an investor would have to pay interest at the domestic rate, $i^d$, and would earn interest based on the foreign rate, $i^k$. For a country $k$ at time $t$ and a look-back period $p$, excess returns $r$ are calculated as the following:
+\\
+$$Excess\;return;\qquad r^k_{t} = i^k_{t-p} – i^d_{t-p} + \Delta s^k_{t}$$
+\\ 
+When considering short positions, we negate both spot and excess returns so that they reflect an investment in US Dollars using foreign currency $k$. 
+\\
+
+The transaction cost for a foreign exchange trade is the amount an investor would be charged for buying or selling a currency pair using a third-party broker who is facilitating the transaction between the buyer and seller. Transaction costs are important to consider when determining whether a strategy is worth-wile as it is commonly the case that excess returns are completely wiped or negated after costs are considered.\\
+
+These costs are encapsulated within the bid-ask spread quotes, where the bid is the highest price a buyer is willing to pay for the currency pair and the ask is lowest price a seller is willing to accept for the currency pair.. At time $t$, the spread is calculated for a particular currency pair as:
+$$Spread_t = Ask_t - Bid_t.$$
+
+ The transaction cost adjusted return $\hat{r}_t$ is then calculated by subtracting the spread as a ratio of the spot price from the excess return $r_t$ as follows\footnote{One must be careful to ensure that for short positions they subtract the spread percentage after negating returns, and not before, so that at no point do our returns increase after adjusting for transaction cost.} : 
+$$TC\;Adjusted\;return;\qquad \hat{r}_t = r_t - \frac{Spread_t}{s_t}.$$
+
+\begin{table}[htbp]
+  \centering
+  \caption{Currency Statistics}
+  This table outlines the key descriptive statistics for the individual currencies that are included within our emerging country criteria at some point over the sample period (1999-2020). Means and standard deviations for returns, transaction costs and interest rate differentials (IRDs) are reported as annualized percentages. The spread (TC\%) column represents the spread as a percentage of the currencies spot price. 
+  
+    \begin{tabular}{llcccccccc}
+          &       &       &       &       &       &       &       &       &  \\
+    \midrule
+    \multicolumn{2}{c}{\textbf{Country}} & \multicolumn{2}{c}{\textbf{Spot Returns}} & \multicolumn{2}{c}{\textbf{Excess Returns}} & \multicolumn{2}{c}{\textbf{Spread (TC \%)}} & \multicolumn{2}{c}{\textbf{IRDs}} \\
+    \midrule
+    Code  & Name  & Mean  & Std   & Mean  & Std   & Mean  & Std   & Mean  & Std \\
+    \midrule
+    DZD   & Algeria & -3.70 & 6.81  & 1.88  & 6.76  & 24.99 & 7.35  & 5.91  & 2.94 \\
+    ARS   & Argentina & -20.38 & 23.29 & -7.41 & 22.93 & 1.45  & 1.13  & 17.05 & 16.20 \\
+    BDT   & Bangladesh & -2.61 & 3.65  & 0.71  & 3.73  & 4.06  & 2.13  & 3.44  & 1.71 \\
+    BRL   & Brazil & -8.58 & 23.10 & 0.85  & 23.10 & 0.96  & 0.30  & 10.48 & 5.15 \\
+    CLP   & Chile & -2.53 & 12.03 & -0.58 & 11.97 & 1.25  & 0.42  & 2.03  & 2.34 \\
+    CNY   & China & 1.05  & 2.72  & 1.67  & 2.77  & 0.42  & 0.22  & 0.61  & 2.03 \\
+    COP   & Colombia & -4.38 & 13.19 & -0.27 & 13.17 & 1.61  & 0.49  & 4.37  & 1.98 \\
+    CZK   & Czech Republic & 0.83  & 12.06 & 0.87  & 12.07 & 2.97  & 0.71  & 0.03  & 1.29 \\
+    EUR   & Greece & -0.26 & 9.72  & 0.33  & 9.76  & 0.42  & 0.13  & 0.59  & 1.48 \\
+    HUF   & Hungary & -2.33 & 13.76 & 1.70  & 13.81 & 4.30  & 0.96  & 4.24  & 3.72 \\
+    INR   & India & -2.68 & 7.05  & 2.32  & 7.02  & 0.72  & 0.41  & 5.19  & 2.15 \\
+    IDR   & Indonesia & -3.40 & 13.33 & 1.91  & 13.30 & 3.04  & 1.18  & 5.58  & 1.76 \\
+    ILS   & Israel & 0.89  & 7.57  & 2.21  & 7.55  & 2.77  & 0.55  & 1.35  & 2.41 \\
+    KZT   & Kazakhstan & -7.86 & 13.39 & -1.32 & 13.33 & 0.93  & 0.38  & 7.16  & 2.85 \\
+    KRW   & Korea, Rep. & -0.08 & 10.54 & 0.95  & 10.53 & 0.87  & 0.54  & 1.04  & 1.61 \\
+    MYR   & Malaysia & -0.45 & 6.26  & 0.89  & 6.23  & 0.97  & 0.23  & 1.35  & 2.03 \\
+    MXN   & Mexico & -3.76 & 11.57 & 0.28  & 11.55 & 1.82  & 0.62  & 4.25  & 2.00 \\
+    NZD   & New Zealand & 0.56  & 12.93 & 2.64  & 12.96 & 42.37 & 9.59  & 2.10  & 1.83 \\
+    NGN   & Nigeria & -7.39 & 12.79 & 1.35  & 12.74 & 8.17  & 4.66  & 9.53  & 2.80 \\
+    PKR   & Pakistan & -5.34 & 5.70  & 0.44  & 5.68  & 1.52  & 0.64  & 6.17  & 2.37 \\
+    PEN   & Peru  & -0.75 & 5.10  & 0.91  & 5.13  & 1.14  & 0.85  & 1.68  & 2.26 \\
+    PHP   & Philippines & -1.15 & 6.19  & 1.75  & 6.22  & 1.70  & 0.56  & 2.97  & 1.87 \\
+    PLN   & Poland & -1.15 & 13.41 & 1.98  & 13.41 & 3.22  & 1.11  & 3.29  & 3.76 \\
+    EUR   & Portugal & -0.26 & 9.72  & 0.33  & 9.76  & 0.42  & 0.13  & 0.59  & 1.48 \\
+    RON   & Romania & -6.33 & 11.46 & 0.34  & 11.15 & 2.62  & 0.78  & 7.52  & 8.48 \\
+    RUB   & Russia & -6.59 & 14.12 & 1.37  & 14.06 & 1.31  & 0.87  & 8.64  & 4.24 \\
+    ZAR   & South Africa & -5.38 & 16.53 & 0.23  & 16.57 & 4.79  & 1.30  & 6.01  & 2.23 \\
+    THB   & Thailand & 0.73  & 6.19  & 1.14  & 6.24  & 1.91  & 1.04  & 0.40  & 1.79 \\
+    TRY   & Turkey & -14.89 & 18.60 & 2.26  & 18.78 & 4.69  & 2.30  & 23.76 & 38.14 \\
+    UAH   & Ukraine & -10.56 & 19.17 & -0.71 & 18.92 & 13.94 & 7.03  & 11.36 & 8.16 \\
+    VND   & Vietnam & -2.32 & 2.56  & 2.51  & 2.58  & 1.39  & 0.56  & 5.02  & 3.62 \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:addlabel}%
+\end{table}%
+
+\subsection{Portfolio Construction}
+
+The momentum portfolios that we examine in this paper are constructed using all combinations of formation, $f$, and holding, $h$, periods from 1,3,6,9 and 12 months, giving us 25 unique strategies. These momentum portfolios are denoted by $MOM(f,h)$ throughout this paper. 
+\\
+
+A cross-sectional momentum factor is determined by ranking the currencies in our universe based on past returns over the formation period. This means a currency that exhibits an increase in strength against the US Dollar relative to the cross-section will have a high rank and a currency that experiences a decline in strength against the US Dollar relative to the cross-section will have a low rank. The top third ranking pairs are classified as 'winners' and the bottom third ranking pairs are classified as 'losers'. 
+\\
+
+Based on this cross-sectional momentum factor ranking, high and low momentum portfolios are established for the pairs in our universe, where all 'winner' pairs are bought and all 'loser' pairs are sold. These pairs are then held from the time of formation until the end of the holding period. A set of high-minus-low momentum portfolios are then constructed, by combining both high and low momentum portfolios\footnote{High momentum portfolios are referred to as 'long' portfolios and low momentum portfolios are referred to as 'short' portfolios throughout this paper}.
+At the end of the holding period, these positions are closed and portfolios are re-calculated based on the updated momentum factor rankings over the new formation period.
+\\
+
+We enter every position in both long and short portfolios with an equal amount of investment resulting in zero-cost, equally weighted momentum portfolios where all weights sum to 1.\footnote{By ensuring that the weights sum to 1, the investor is always fully invested in the strategy} For each currency pair $i$ at time $t$, we can express the weights $w_i$ with the following equation:
+$$w^i_t = \frac{1}{N}$$
+where $N$ represents the total number of currencies in both the winners and the losers.
+\\
+The weighted return for currency $i$ at time $t$ is scaled by the following equation:
+$$Weighted\;return^i_t = w^i_t \times r^i_t$$
+
+\\
+\subsection{Alternative Weightings}
+ A limitation of the equally weighted strategy is that it does not take into account the idiosyncratic performance of currency pairs within the high and low momentum portfolios. Rather it assigns equal weight to all winners and losers, even if a specific winner or loser exhibited superior performance relative to its peers over the formation period.\\
+ 
+It may be reasonable for an investor who is mainly interested in maximising returns to want to give more weight to the currencies with higher past returns. Conversely, a risk-averse investor may wish to generate significant performance while minimising exposure to volatility. 
+While the equally weighted momentum strategy is the benchmark for this paper, we investigate two other methods of weighting the momentum portfolios that attempts to address the scenarios presented above.
+\\ 
+
+The first method of weighting the momentum portfolios is by past returns. At time $t$, for a currency pair $i$ in both long and short portfolios, we assign weight $w^i_t$ based on the following equation:
+$$w^i_t = \frac{\abs{r^i_t}}{\sum_i{\abs{r^i_t}}} $$
+\\
+
+Since this method of weighting accounts for both long and short portfolio assets together, the portfolio is no longer zero-cost. A benefit of this method however is that if winner currencies momentum returns outperform loser momentum currency returns consistently, and vice-versa, the portfolio will be favourable to the stronger performing side.
+\\
+
+The second method attempts to assign higher weight to currencies with higher risk-adjusted return, by considering a currency pairs excess return and dividing by its idiosyncratic standard deviation. By assigning more weight to currencies with a higher return divided by standard deviation, we obtain a strategy that prioritises maximising profitability without experiencing huge changes in returns. \footnote{We refer to this strategy as 'risk weighted' or 'Sharpe weighted' due to its similarity with the Sharpe ratio calculation.} At time $t$, for a currency pair $i$ in both long and short portfolios, weight $w^i_t$ is assigned based on the following equation:
+$$w^i_t = \frac{\frac{\abs{r^i_t}}{\sigma^t_t}}{\sum_i{\frac{\abs{r^i_t}}{\sigma^t_t}}}$$
+where $\sigma^i_t$ is the standard deviation for currency pair $i$ over the formation period.
+\\
+By construction, both of these weighting strategies produce portfolios that are fully invested as $\sum_i{w^i_t} = 1$.
+Weighted returns are then calculating in the same way as demonstrated in the equally weighted strategy.
+\\
+
+
+\subsection{Data}
+The sample period in this research spans from January 1999 to January 2021. This period coincides with the existence of the Euro and captures the modern dynamic of electronic and internet trading in the FX market.\\
+
+
+Using the Bloomberg Terminal we obtain relevant spot rates, bid-ask quote rates, and volatility data from 1998 onwards. We also obtain yearly GDP values from 1989 onwards and yearly GNI/capita from 1998 onwards from the World Bank Open Data source\footnote{\url{https://data.worldbank.org}}. We use yearly interest rate data from 1999 onwards which we obtain from IMF’s data source \footnote{\url{https://www.imf.org/en/Data}}. \\
+
+\newpage
+
+\section{Results and Analysis}
+\subsection{Momentum Performance}
+
+From the results in Table \ref{EWMR} Panel A, it is clear that momentum strategies in emerging foreign exchange market can produce significantly high returns. Out of the 25 strategies examined, all produced positive annualised spot returns and 19 of them produced positive excess returns. These equally weighted long-short momentum strategies produce significant returns of up to 17.34\% in spot returns and 17.70\% in excess returns per annum. It can be seen that as the holding period increases, momentum becomes less effective which is in agreement with Menkhoff et al(2012).  Strategies with holding periods of 1 month produce 10.41\% annualised spot returns and 10.20\% annualised excess returns on average, as opposed to strategies with 12 month holding periods which produce 2.84\% annualised spot returns and -0.01\% annualised excess returns on average. In addition, it can be seen that most of the significant returns are present among strategies where the length of formation period is greater than or equal to the length of the holding period.\\
+
+
+Furthermore, the fact that these strategies produce significantly positive spot and excess returns suggests that interest rates are not a key factor in driving the profitability of momentum. Actually, it can be seen that the interest rate differential component loads negatively on the momentum excess returns for most strategies, especially ones with longer holding periods. This is in contrast with the findings on the carry trade which is mostly driven by interest rate differentials (Lustig et al.(2011)).\\
+
+
+
+\begin{table}[t!]
+  \centering
+  \caption{Momentum Strategy Results}
+Reported below are the results for the equally weighted long-short momentum portfolios with formation periods, $f$, and holding periods, $h$, in months. Panel A displays the annualized average returns $r(f,h)$ where the left table shows excess returns and the right table shows raw spot returns. Panel B displays the Sharpe ratio values for excess returns on the left and a measure of annualized average spot returns divided by annualized standard deviation on the right. The 'Avg' row in each table display the average results in that table for each holding period. Monthly returns are used for these calculations and the sample period is from January 1999 up until January 2021. Results that are significant to 5\% and 1\% are represented with * and ** respectively.
+    \begin{adjustwidth}{-1.3cm}{}
+    \begin{tabular}{clllllcclllll}
+          &       &       &       &       &       &       &       &       &       &       &       &  \\
+    \midrule
+          & \multicolumn{12}{l}{PANEL A: Excess and Spot Returns} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Spot Returns} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 2.47** & 0.94  & 1.38  & 0.58  & -0.15 &       & \textbf{1} & 2.29** & 1.72  & 2.68  & 2.61* & 2.63* \\
+    \textbf{3} & 17.70** & 0.57  & 0.26  & -1.30 & -0.74 &       & \textbf{3} & 17.34** & 1.79  & 1.40  & 0.95  & 2.72* \\
+    \textbf{6} & 12.37** & 12.27** & 0.27  & -0.95 & 0.18  &       & \textbf{6} & 12.78** & 12.23** & 2.72* & 2.38* & 3.06* \\
+    \textbf{9} & 10.41** & 10.20** & 4.98** & -0.46 & 0.78  &       & \textbf{9} & 10.84** & 10.43** & 5.15** & 1.48  & 2.66 \\
+    \textbf{12} & 8.03** & 8.98** & 9.83** & 3.15** & -0.10 &       & \textbf{12} & 8.77** & 9.49** & 9.26** & 5.13** & 3.12* \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{Avg} & 10.20 & 6.59  & 3.35  & 0.21  & -0.01 &       & \textbf{Avg} & 10.41 & 7.13  & 4.24  & 2.51  & 2.84 \\
+    \midrule
+          & \multicolumn{12}{l}{PANEL B: Sharpe Ratios and Normalized Spot Returns} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Spot Returns} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 0.63** & 0.20  & 0.29  & 0.17  & -0.03 &       & \textbf{1} & 0.59* & 0.40  & 0.41  & 0.50  & 0.52 \\
+    \textbf{3} & 4.36** & 0.13  & 0.05  & -0.34 & -0.11 &       & \textbf{3} & 4.19** & 0.42* & 0.25  & 0.22  & 0.56* \\
+    \textbf{6} & 3.37** & 2.69** & 0.06* & -0.20 & 0.06  &       & \textbf{6} & 3.38** & 2.81** & 0.48** & 0.47* & 0.57* \\
+    \textbf{9} & 2.89** & 2.26** & 0.99** & -0.08 & 0.10  &       & \textbf{9} & 2.86** & 2.25** & 1.13** & 0.30* & 0.42 \\
+    \textbf{12} & 2.31** & 2.32** & 1.90** & 0.89** & -0.02 &       & \textbf{12} & 2.34** & 2.36** & 2.06** & 0.99** & 0.46 \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{Avg} & 2.71  & 1.52  & 0.66  & 0.09  & 0.00  &       & \textbf{Avg} & 2.67  & 1.65  & 0.87  & 0.49  & 0.50 \\
+    \bottomrule
+    \end{tabular}%
+  \label{EWMR}%
+  \end{adjustwidth}
+\end{table}%
+
+\begin{table}[t!]
+  \centering
+  \caption{High and Low Momentum Results} Reported below are the annualized average excess returns $r(f,h)$ (Panel A) and the corresponding Sharpe ratios (Panel B) for the equally weighted high momentum (left) and low momentum (right) strategies. Currencies in the high momentum portfolios were bought and the currencies in the low momentum portfolios were sold. Formation periods $f$ and holding periods $h$ are in months and our sample spans from January 1999 up until December 2020. The 'Avg' row in each table display the average results in that table for each holding period. Monthly returns are used for these calculations and the results that are significant to 5\% and 1\% are represented with * and ** respectively.
+    \begin{adjustwidth}{-1cm}{}
+    \begin{tabular}{clllllrclllll}
+          &       &       &       &       &       &       &       &       &       &       &       &  \\
+    \midrule
+          & \multicolumn{5}{c}{\textbf{High Momentum Portfolios }} &       &       & \multicolumn{5}{c}{\textbf{Low Momentum Portfolios }} \\
+    \midrule
+          & \multicolumn{12}{l}{PANEL A: Excess Returns} \\
+    \midrule
+          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 1.91* & 0.75  & 1.30  & 0.67  & 0.04  &       & \textbf{1} & 0.56  & 0.19  & 0.08  & -0.09 & -0.18 \\
+    \textbf{3} & 9.32** & 0.81  & 1.16  & 0.01  & 0.60  &       & \textbf{3} & 7.72** & -0.24 & -0.89 & -1.31 & -1.34 \\
+    \textbf{6} & 6.86** & 6.97** & 0.62  & -0.42 & 0.11  &       & \textbf{6} & 5.18** & 5.04** & -0.35 & -0.54 & 0.07 \\
+    \textbf{9} & 5.96** & 5.57** & 3.42** & 0.05  & 1.20  &       & \textbf{9} & 4.22** & 4.44** & 1.54  & -0.51 & -0.42 \\
+    \textbf{12} & 5.03** & 5.27** & 5.63** & 1.79* & -0.25 &       & \textbf{12} & 2.87** & 3.57** & 4.08** & 1.36  & 0.15 \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{Avg} & 5.82  & 3.88  & 2.43  & 0.42  & 0.34  &       & \textbf{Avg} & 4.11  & 2.60 & 0.89  & -0.22 & -0.34 \\
+    \midrule
+          & \multicolumn{12}{l}{PANEL B: Sharpe Ratios} \\
+    \midrule
+          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 0.54** & 0.15* & 0.29  & 0.19  & 0.01  &       & \textbf{1} & 0.14  & 0.05  & 0.02  & -0.03 & -0.04 \\
+    \textbf{3} & 3.06** & 0.18** & 0.20** & 0.00  & 0.14  &       & \textbf{3} & 1.77** & -0.06 & -0.22 & -0.32 & -0.20 \\
+    \textbf{6} & 2.24** & 2.17** & 0.10** & -0.08 & 0.03  &       & \textbf{6} & 1.27** & 1.05** & -0.09 & -0.23 & 0.02 \\
+    \textbf{9} & 1.89** & 1.75** & 0.74** & 0.01  & 0.17  &       & \textbf{9} & 1.11  & 0.90  & 0.35  & -0.17 & -0.09 \\
+    \textbf{12} & 1.51** & 1.71** & 1.49** & 0.53** & -0.06 &       & \textbf{12} & 0.76  & 0.78  & 0.76** & 0.34  & 0.03 \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{Avg} & 1.85  & 1.19  & 0.55  & 0.13  & 0.06  &       & \textbf{Avg} & 0.67  & 0.42  & 0.01  & -0.08 & -0.06 \\
+    \bottomrule
+    \end{tabular}%
+  \label{HLMR}%
+  \end{adjustwidth}
+\end{table}%
+
+
+Table \ref{EWMR} Panel B displays results that incorporate both returns and volatility within its values, presenting performance from a risk-adjusted perspective. We see that Sharpe ratio and normalized spot return results follow a similar pattern to return performance results in Panel A. The highest Sharpe ratios are achieved with holding periods of 1 month, producing an impressive average score of 2.71. To put this into perspective, Menkhoff et al.(2012) present an average score of 0.78 for the same strategies over a large currency cross-section. This highlights that these equally weighted momentum strategies are highly effective in emerging currencies even after considering the risk involved.\\
+
+Table \ref{HLMR} assesses the performance for high and low momentum portfolios separately, and it can be seen that strategies buying high momentum currencies outperform strategies selling low momentum currencies. Essentially in this case-study, buying winners is a better option than selling losers; however, both produce significantly positive results. For example, for strategies with 1 month holding period, long portfolios produce 5.82\% annualised average excess return compared to short portfolios which produce 4.11\%. \\
+
+\begin{figure}[p]
+    \centering
+    \vspace{-2.5cm}
+    \begin{minipage}{1\textwidth}
+    \centering
+    \caption{This figure displays the cumulative monthly excess returns, left graph, and the cumulative monthly spot returns, right graph, for the momentum strategy with 3 month formation period and 1 month holding period (MOM(3,1)) over the sample period. The high-low ('total') momentum returns are displayed in black, the high ('long') momentum returns are displayed in blue and the low ('short') momentum is displayed in red.}
+    \begin{adjustwidth}{-0.3cm}{}
+    \includegraphics[width=1.05\textwidth]{Graphs/MOM_3_1_CUMPLOT.png}
+    \end{adjustwidth}
+    \label{CS31}
+    \end{minipage}
+
+    \begin{minipage}{1\textwidth}
+    \centering
+    \caption{This figure displays the cumulative monthly excess returns, left graph, and the cumulative monthly spot returns, right graph, for the momentum strategy with 3 month formation period and 1 month holding period (MOM(3,1)) over the sample period. The high-low ('total') momentum returns are displayed in black, the high ('long') momentum returns are displayed in blue and the low ('short') momentum is displayed in red.}
+    \begin{adjustwidth}{-0.5cm}{}
+    \includegraphics[width=1.05\textwidth]{Graphs/MOM_EXReturns_3_1.png}
+    \end{adjustwidth}
+    \label{MR31}
+    \end{minipage}
+\end{figure}
+
+It is clear that the most profitable strategy is with 3 month formation and 1 month holding periods, producing annualised average excess return of 17.70\% with significant a Sharpe ratio of 4.36. Cumulative returns for MOM(3,1) are shown in Figure \ref{CS31}. It can be seen that over the entirety of the sample period, the equally weighted MOM(3,1) strategy produces cumulative excess return of around 350\%. It is noticeable that the cumulative returns are fairly stable and do not experience any major breaks or periods of draw-down. Furthermore, it is clear that the low momentum (short portfolio) has higher cumulative spot return compared to the high momentum (long portfolio). over the sample period. However, once interest rate differentials are considered, a reversal of this effect takes place as the long portfolio outperforms the short portfolio. This pattern is what one would expect as emerging countries tend to have high interest rates relative to the base country (U.S), meaning that borrowing at the foreign rate ends up being more costly than borrowing at the domestic rate, resulting in a decrease in excess return when considering short positions.\\
+
+From Figure \ref{MR31}, it can be seen that monthly excess returns for the long-short MOM(3,1) strategy fluctuates fairly close to its average value. However, it seems as though the fluctuations are more extreme in the positive direction. For example, the highest monthly excess return reaches a high of 6.41 (4.3 std away from mean) as opposed to its biggest low at -1.36 (2.2 std away from mean).\\
+
+Table \ref{MRS} outlines some of the key distribution statistics for the two best performing strategies MOM(3,1) and MOM(6,1) where it can be seen that the mean values are all significantly higher than 0. It is also evident that these momentum strategies have positive skew, implying that monthly return values occurring below the mean are more prevalent. In addition, short portfolios have high kurtosis as opposed to long portfolios. This suggests that the monthly returns for MOM(3,1) and MOM(6,1) short portfolios have a tendency to be further away from the mean as opposed to the long portfolios which are highly mean-centered.
+
+
+
+\begin{table}[t!]
+  \centering
+  \caption{MOM(3,1) and MOM(6,1) Monthly Return Statistics}
+  This table reports statistics for the distribution of excess and spot monthly returns (\%) for the momentum strategies with 1 month holding period and 3, 6 month formation period over the sample period (1999-2020). Results are reported for high-low ('total'), high('long') and low('short') momentum portfolios. Means which are significantly different from zero at the 5\% and 1\% level are labelled with * and ** respectively.
+    \begin{tabular}{lccccccc}
+          &       &       &       &       &       &       &  \\
+    \midrule
+    \multicolumn{8}{c}{Momentum Portfolios: f=3, h=1} \\
+    \midrule
+          & \multicolumn{3}{c}{Excess Returns} &       & \multicolumn{3}{c}{Spot Returns} \\
+    \midrule
+          & Total & Long  & Short &       & Total & Long  & Short \\
+    \midrule
+    Mean  & 1.37** & 0.75** & 0.62** &       & 1.34** & 0.50** & 0.85** \\
+    Standard Dev. & 1.17  & 0.88  & 1.26  &       & 1.19  & 0.87  & 1.31 \\
+    Max Return & 6.41  & 3.60  & 7.44  &       & 6.56  & 3.24  & 7.80 \\
+    Min Return & -1.36 & -1.30 & -2.21 &       & -1.64 & -2.23 & -1.87 \\
+    Skewness & 1.10  & 0.59  & 1.95  &       & 1.08  & 0.55  & 1.81 \\
+    Kurtosis & 1.93  & 0.48  & 5.99  &       & 2.48  & 0.80  & 5.35 \\
+    \midrule
+          &       &       &       &       &       &       &  \\
+    \multicolumn{8}{c}{Momentum Portfolios: f=6, h=1} \\
+    \midrule
+          & \multicolumn{3}{c}{Excess Returns} &       & \multicolumn{3}{c}{Spot Returns} \\
+    \midrule
+          & Total & Long  & Short &       & Total & Long  & Short \\
+    \midrule
+    Mean  & 0.98** & 0.55** & 0.42** &       & 1.01** & 0.33** & 0.67** \\
+    Standard Dev. & 1.06  & 0.89  & 1.18  &       & 1.09  & 0.93  & 1.23 \\
+    Max Return & 5.09  & 3.43  & 6.99  &       & 5.50  & 3.36  & 7.44 \\
+    Min Return & -1.68 & -2.06 & -2.53 &       & -1.64 & -3.58 & -1.93 \\
+    Skewness & 0.79  & 0.25  & 1.63  &       & 0.78  & 0.09  & 1.61 \\
+    Kurtosis & 1.30  & 0.73  & 5.36  &       & 1.22  & 1.83  & 4.87 \\
+    \bottomrule
+    \end{tabular}%
+  \label{MRS}%
+\end{table}%
+
+
+\subsection{Different Weights}
+
+\begin{table}[htbp!]
+  \centering
+  \vspace{-3cm}
+  \caption{Weighted Momentum Strategy Results}
+Reported below are the results for the return weighted (Panel A.1,B.1) and risk weighted (Panel A.2,B.2) long-short momentum portfolios with formation periods, $f$, and holding periods, $h$, in months. Panel A displays the annualized average returns $r(f,h)$ where the left table shows excess returns and the right table shows raw spot returns. Panel B displays the Sharpe ratio values for excess returns on the left and a measure of annualized average spot returns divided by annualized standard deviation on the right. The 'Avg' row in each table display the average results in that table for each holding period. Monthly returns are used for these calculations and the sample period is from January 1999 up until January 2021. Results that are significant to 5\% and 1\% are represented with * and **, respectively.
+  \begin{adjustwidth}{-2cm}{}
+    \begin{tabular}{ccccccccccccc}
+          &       &       &       &       &       &       &       &       &       &       &       &  \\
+    \midrule
+          & \multicolumn{12}{l}{PANEL A.1: 'Return' Weighted; Excess and Spot Returns} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Spot Returns} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \multicolumn{1}{l}{\textbf{1}} & \multicolumn{1}{l}{\textbf{3}} & \multicolumn{1}{l}{\textbf{6}} & \multicolumn{1}{l}{\textbf{9}} & \multicolumn{1}{l}{\textbf{12}} &       & \textit{\textbf{f}} & \multicolumn{1}{l}{\textbf{1}} & \multicolumn{1}{l}{\textbf{3}} & \multicolumn{1}{l}{\textbf{6}} & \multicolumn{1}{l}{\textbf{9}} & \multicolumn{1}{l}{\textbf{12}} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & \multicolumn{1}{l}{5.17**} & \multicolumn{1}{l}{0.46} & \multicolumn{1}{l}{1.70} & \multicolumn{1}{l}{0.37} & \multicolumn{1}{l}{-0.57} &       & \textbf{1} & \multicolumn{1}{l}{5.49**} & \multicolumn{1}{l}{1.93} & \multicolumn{1}{l}{4.65} & \multicolumn{1}{l}{3.48} & \multicolumn{1}{l}{3.71} \\
+    \textbf{3} & \multicolumn{1}{l}{36.71**} & \multicolumn{1}{l}{1.55} & \multicolumn{1}{l}{0.39} & \multicolumn{1}{l}{0.24} & \multicolumn{1}{l}{-2.69} &       & \textbf{3} & \multicolumn{1}{l}{37.97**} & \multicolumn{1}{l}{3.87*} & \multicolumn{1}{l}{4.45} & \multicolumn{1}{l}{5.72*} & \multicolumn{1}{l}{4.08} \\
+    \textbf{6} & \multicolumn{1}{l}{24.44*} & \multicolumn{1}{l}{25.35**} & \multicolumn{1}{l}{0.78} & \multicolumn{1}{l}{0.12} & \multicolumn{1}{l}{-0.20} &       & \textbf{6} & \multicolumn{1}{l}{27.36**} & \multicolumn{1}{l}{25.72**} & \multicolumn{1}{l}{5.04*} & \multicolumn{1}{l}{7.03**} & \multicolumn{1}{l}{6.70*} \\
+    \textbf{9} & \multicolumn{1}{l}{18.21**} & \multicolumn{1}{l}{20.60**} & \multicolumn{1}{l}{12.51**} & \multicolumn{1}{l}{-1.10} & \multicolumn{1}{l}{-1.61} &       & \textbf{9} & \multicolumn{1}{l}{21.64**} & \multicolumn{1}{l}{22.23**} & \multicolumn{1}{l}{11.93**} & \multicolumn{1}{l}{7.14*} & \multicolumn{1}{l}{5.92} \\
+    \textbf{12} & \multicolumn{1}{l}{14.22**} & \multicolumn{1}{l}{17.01**} & \multicolumn{1}{l}{19.91**} & \multicolumn{1}{l}{4.96*} & \multicolumn{1}{l}{-1.71} &       & \textbf{12} & \multicolumn{1}{l}{17.37**} & \multicolumn{1}{l}{19.55**} & \multicolumn{1}{l}{19.25**} & \multicolumn{1}{l}{11.69**} & \multicolumn{1}{l}{6.85} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{Avg} & \multicolumn{1}{l}{19.75} & \multicolumn{1}{l}{12.99} & \multicolumn{1}{l}{7.06} & \multicolumn{1}{l}{0.92} & \multicolumn{1}{l}{-1.36} &       & \textbf{Avg} & \multicolumn{1}{l}{21.96} & \multicolumn{1}{l}{14.66} & \multicolumn{1}{l}{9.06} & \multicolumn{1}{l}{7.01} & \multicolumn{1}{l}{5.45} \\
+    \midrule
+          & \multicolumn{12}{l}{PANEL B.1: 'Return' Weighted; Sharpe Ratios and Normalized Spot Returns} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Spot Returns} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \multicolumn{1}{l}{\textbf{1}} & \multicolumn{1}{l}{\textbf{3}} & \multicolumn{1}{l}{\textbf{6}} & \multicolumn{1}{l}{\textbf{9}} & \multicolumn{1}{l}{\textbf{12}} &       & \textit{\textbf{f}} & \multicolumn{1}{l}{\textbf{1}} & \multicolumn{1}{l}{\textbf{3}} & \multicolumn{1}{l}{\textbf{6}} & \multicolumn{1}{l}{\textbf{9}} & \multicolumn{1}{l}{\textbf{12}} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & \multicolumn{1}{l}{0.65**} & \multicolumn{1}{l}{0.05} & \multicolumn{1}{l}{0.18} & \multicolumn{1}{l}{0.07} & \multicolumn{1}{l}{-0.06} &       & \textbf{1} & \multicolumn{1}{l}{0.65*} & \multicolumn{1}{l}{0.24} & \multicolumn{1}{l}{0.43} & \multicolumn{1}{l}{0.41} & \multicolumn{1}{l}{0.36} \\
+    \textbf{3} & \multicolumn{1}{l}{3.66**} & \multicolumn{1}{l}{0.15} & \multicolumn{1}{l}{0.03} & \multicolumn{1}{l}{0.04} & \multicolumn{1}{l}{-0.22} &       & \textbf{3} & \multicolumn{1}{l}{3.53**} & \multicolumn{1}{l}{0.46} & \multicolumn{1}{l}{0.40} & \multicolumn{1}{l}{0.52} & \multicolumn{1}{l}{0.29} \\
+    \textbf{6} & \multicolumn{1}{l}{2.78**} & \multicolumn{1}{l}{2.40**} & \multicolumn{1}{l}{0.06} & \multicolumn{1}{l}{0.01} & \multicolumn{1}{l}{-0.02} &       & \textbf{6} & \multicolumn{1}{l}{2.77**} & \multicolumn{1}{l}{2.29**} & \multicolumn{1}{l}{0.50*} & \multicolumn{1}{l}{0.62*} & \multicolumn{1}{l}{0.48**} \\
+    \textbf{9} & \multicolumn{1}{l}{2.45**} & \multicolumn{1}{l}{1.93**} & \multicolumn{1}{l}{0.93**} & \multicolumn{1}{l}{-0.14} & \multicolumn{1}{l}{-0.13} &       & \textbf{9} & \multicolumn{1}{l}{2.62**} & \multicolumn{1}{l}{1.95**} & \multicolumn{1}{l}{1.16**} & \multicolumn{1}{l}{0.60**} & \multicolumn{1}{l}{0.37} \\
+    \textbf{12} & \multicolumn{1}{l}{1.99**} & \multicolumn{1}{l}{1.67**} & \multicolumn{1}{l}{1.31**} & \multicolumn{1}{l}{0.52**} & \multicolumn{1}{l}{-0.14} &       & \textbf{12} & \multicolumn{1}{l}{2.17**} & \multicolumn{1}{l}{1.78**} & \multicolumn{1}{l}{1.50**} & \multicolumn{1}{l}{0.83**} & \multicolumn{1}{l}{0.44} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{Avg} & \multicolumn{1}{l}{2.31} & \multicolumn{1}{l}{1.24} & \multicolumn{1}{l}{0.50} & \multicolumn{1}{l}{0.10} & \multicolumn{1}{l}{-0.11} &       & \textbf{Avg} & \multicolumn{1}{l}{2.35} & \multicolumn{1}{l}{1.34} & \multicolumn{1}{l}{0.80} & \multicolumn{1}{l}{0.60} & \multicolumn{1}{l}{0.39} \\
+    \midrule
+          &       &       &       &       &       &       &       &       &       &       &       &  \\
+    \midrule
+          & \multicolumn{12}{l}{PANEL A.2: 'Risk' Weighted; Excess and Spot Returns} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Spot Returns} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \multicolumn{1}{l}{\textbf{1}} & \multicolumn{1}{l}{\textbf{3}} & \multicolumn{1}{l}{\textbf{6}} & \multicolumn{1}{l}{\textbf{9}} & \multicolumn{1}{l}{\textbf{12}} &       & \textit{\textbf{f}} & \multicolumn{1}{l}{\textbf{1}} & \multicolumn{1}{l}{\textbf{3}} & \multicolumn{1}{l}{\textbf{6}} & \multicolumn{1}{l}{\textbf{9}} & \multicolumn{1}{l}{\textbf{12}} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & \multicolumn{1}{l}{1.37} & \multicolumn{1}{l}{1.63} & \multicolumn{1}{l}{2.07} & \multicolumn{1}{l}{0.70} & \multicolumn{1}{l}{-0.97} &       & \textbf{1} & \multicolumn{1}{l}{2.04} & \multicolumn{1}{l}{3.12} & \multicolumn{1}{l}{4.43*} & \multicolumn{1}{l}{3.89*} & \multicolumn{1}{l}{3.96} \\
+    \textbf{3} & \multicolumn{1}{l}{25.21**} & \multicolumn{1}{l}{0.85} & \multicolumn{1}{l}{-0.82} & \multicolumn{1}{l}{-0.82} & \multicolumn{1}{l}{-2.03} &       & \textbf{3} & \multicolumn{1}{l}{25.05**} & \multicolumn{1}{l}{3.67*} & \multicolumn{1}{l}{1.80} & \multicolumn{1}{l}{2.31} & \multicolumn{1}{l}{2.01} \\
+    \textbf{6} & \multicolumn{1}{l}{17.55**} & \multicolumn{1}{l}{16.70**} & \multicolumn{1}{l}{-0.65} & \multicolumn{1}{l}{-0.63} & \multicolumn{1}{l}{0.21} &       & \textbf{6} & \multicolumn{1}{l}{18.92**} & \multicolumn{1}{l}{17.50**} & \multicolumn{1}{l}{3.34} & \multicolumn{1}{l}{3.31*} & \multicolumn{1}{l}{4.25*} \\
+    \textbf{9} & \multicolumn{1}{l}{14.38**} & \multicolumn{1}{l}{13.67**} & \multicolumn{1}{l}{6.24**} & \multicolumn{1}{l}{-0.52} & \multicolumn{1}{l}{-0.73} &       & \textbf{9} & \multicolumn{1}{l}{15.74**} & \multicolumn{1}{l}{14.76**} & \multicolumn{1}{l}{7.00**} & \multicolumn{1}{l}{2.53} & \multicolumn{1}{l}{3.53} \\
+    \textbf{12} & \multicolumn{1}{l}{10.69**} & \multicolumn{1}{l}{12.11**} & \multicolumn{1}{l}{12.56**} & \multicolumn{1}{l}{4.75**} & \multicolumn{1}{l}{-0.79} &       & \textbf{12} & \multicolumn{1}{l}{12.26**} & \multicolumn{1}{l}{13.26**} & \multicolumn{1}{l}{12.83**} & \multicolumn{1}{l}{7.41**} & \multicolumn{1}{l}{3.95} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{Avg} & \multicolumn{1}{l}{13.84} & \multicolumn{1}{l}{8.99} & \multicolumn{1}{l}{3.88} & \multicolumn{1}{l}{0.69} & \multicolumn{1}{l}{-0.86} &       & \textbf{Avg} & \multicolumn{1}{l}{14.80} & \multicolumn{1}{l}{10.46} & \multicolumn{1}{l}{5.88} & \multicolumn{1}{l}{3.89} & \multicolumn{1}{l}{3.54} \\
+    \midrule
+          & \multicolumn{12}{l}{PANEL B.2: 'Risk' Weighted; Sharpe Ratios and Normalized Spot Returns} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Spot Returns} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \multicolumn{1}{l}{\textbf{1}} & \multicolumn{1}{l}{\textbf{3}} & \multicolumn{1}{l}{\textbf{6}} & \multicolumn{1}{l}{\textbf{9}} & \multicolumn{1}{l}{\textbf{12}} &       & \textit{\textbf{f}} & \multicolumn{1}{l}{\textbf{1}} & \multicolumn{1}{l}{\textbf{3}} & \multicolumn{1}{l}{\textbf{6}} & \multicolumn{1}{l}{\textbf{9}} & \multicolumn{1}{l}{\textbf{12}} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & \multicolumn{1}{l}{0.16} & \multicolumn{1}{l}{0.21} & \multicolumn{1}{l}{0.30} & \multicolumn{1}{l}{0.13} & \multicolumn{1}{l}{-0.12} &       & \textbf{1} & \multicolumn{1}{l}{0.24} & \multicolumn{1}{l}{0.39} & \multicolumn{1}{l}{0.47} & \multicolumn{1}{l}{0.49} & \multicolumn{1}{l}{0.41} \\
+    \textbf{3} & \multicolumn{1}{l}{3.36**} & \multicolumn{1}{l}{0.10} & \multicolumn{1}{l}{-0.09} & \multicolumn{1}{l}{-0.16} & \multicolumn{1}{l}{-0.27} &       & \textbf{3} & \multicolumn{1}{l}{3.21**} & \multicolumn{1}{l}{0.45**} & \multicolumn{1}{l}{0.22} & \multicolumn{1}{l}{0.39} & \multicolumn{1}{l}{0.30} \\
+    \textbf{6} & \multicolumn{1}{l}{2.63**} & \multicolumn{1}{l}{1.98**} & \multicolumn{1}{l}{-0.09} & \multicolumn{1}{l}{-0.09} & \multicolumn{1}{l}{0.04} &       & \textbf{6} & \multicolumn{1}{l}{2.69**} & \multicolumn{1}{l}{1.98**} & \multicolumn{1}{l}{0.43*} & \multicolumn{1}{l}{0.46} & \multicolumn{1}{l}{0.50*} \\
+    \textbf{9} & \multicolumn{1}{l}{2.25**} & \multicolumn{1}{l}{1.71**} & \multicolumn{1}{l}{0.69**} & \multicolumn{1}{l}{-0.07} & \multicolumn{1}{l}{-0.08} &       & \textbf{9} & \multicolumn{1}{l}{2.33**} & \multicolumn{1}{l}{1.79**} & \multicolumn{1}{l}{0.84**} & \multicolumn{1}{l}{0.35*} & \multicolumn{1}{l}{0.38} \\
+    \textbf{12} & \multicolumn{1}{l}{1.75**} & \multicolumn{1}{l}{1.73**} & \multicolumn{1}{l}{1.57**} & \multicolumn{1}{l}{0.68**} & \multicolumn{1}{l}{-0.11} &       & \textbf{12} & \multicolumn{1}{l}{1.95**} & \multicolumn{1}{l}{1.76**} & \multicolumn{1}{l}{1.42**} & \multicolumn{1}{l}{0.88**} & \multicolumn{1}{l}{0.41} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{Avg} & \multicolumn{1}{l}{2.03} & \multicolumn{1}{l}{1.15} & \multicolumn{1}{l}{0.48} & \multicolumn{1}{l}{0.10} & \multicolumn{1}{l}{-0.11} &       & \textbf{Avg} & \multicolumn{1}{l}{2.08} & \multicolumn{1}{l}{1.27} & \multicolumn{1}{l}{0.68} & \multicolumn{1}{l}{0.51} & \multicolumn{1}{l}{0.40} \\
+    \midrule
+          &       &       &       &       &       &       &       &       &       &       &       &  \\
+    \end{tabular}%
+    \end{adjustwidth}
+  \label{WMR}%
+\end{table}%
+
+The results in Table \ref{WMR}, Panel A.1, display the annualised average spot and excess returns for the high-low momentum strategies weighted on past returns. It can be seen that these strategies generate significantly positive returns almost double in scale compared to the benchmark equally weighted strategies. In particular, return weighted strategies with 1 month holding period produce an average of 21.96\% in annualised spot returns and 19.75\% in annualised excess returns. From Panel B.1, it can be seen that these return weighted strategies with 1 month holding period produce an average annualised Sharpe ratio value of 2.31 and annualised normalized spot return value of 2.35. These values remain impressive, however they are smaller in comparison to the corresponding equal weighted Sharpe and normalized spot return values. This suggests that this drastic increase in returns is accompanied by an increase in volatility risk-exposure.\\
+
+The structure of these returns present in Panel A.1 (return weighted) and A.2 (Sharpe weighted) is similar to the structure present in the equally weighted strategy. Namely, high momentum outperforms low momentum, interest rate differentials load negatively on returns, and profitability decreases with an increase in holding period. MOM(3,1) still remains the most profitable strategy yielding an annualised average excess return of 36.71\% accompanied with a Sharpe ratio of 3.66. These results are interesting as it suggests that by simply incorporating the strength of the trend for 'winner' and 'loser' currency pairs within the high and low momentum portfolios leads to a substantial increase in the returns for cross-sectional momentum strategies. \\
+
+In the bottom half of Table \ref{WMR}, results for the 'risk' weighted momentum strategies are presented where it can be seen that these strategies also outperform the benchmark equal weighted strategies, but not to the extent seen by the return weighted strategies. These 'risk' weighted strategies give a higher amount of investment to winner and loser pairs with smaller idiosyncratic standard deviation. However, despite the fact that these portfolios favour lower risk, the Sharpe ratios and normalized spot returns still under-perform the same measures for the return weighted strategies.\\
+
+\subsection{Performance After Transaction Costs}
+
+
+\begin{table}[htpb!]
+  \centering
+  \caption{Equally Weighted Strategies After Transaction Costs}
+  Reported below are the results for the equally weighted long-short momentum portfolios with formation periods, $f$, and holding periods, $h$, in months. Panel A displays the annualized average returns $r(f,h)$ where the left table shows excess returns and the right table shows raw spot returns. Panel B displays the Sharpe ratio values for excess returns on the left and a measure of annualized average spot returns divided by annualized standard deviation on the right. The 'Avg' row in each table display the average results in that table for each holding period. Monthly returns are used for these calculations and the sample period is from January 1999 up until January 2021. Results that are significant to 5\% and 1\% are represented with * and ** respectively.
+  \begin{adjustwidth}{-1.5cm}{}
+  
+    \begin{tabular}{clllllrclllll}
+          &       &       &       &       &       &       &       &       &       &       &       &  \\
+    \midrule
+          & \multicolumn{12}{l}{PANEL A: Excess Returns and Sharpe Ratios} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Sharpe Ratios} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & -1.20 & -0.36 & 0.63  & 0.16  & -0.51 &       & \textbf{1} & -0.29* & -0.07 & 0.13  & 0.05  & -0.09 \\
+    \textbf{3} & 13.86** & -0.63 & -0.37 & -1.76* & -1.05 &       & \textbf{3} & 3.45** & -0.14 & -0.07 & -0.46 & -0.16 \\
+    \textbf{6} & 8.73** & 11.04** & -0.43 & -1.42 & -0.19 &       & \textbf{6} & 2.33** & 2.45** & -0.09 & -0.29 & -0.07 \\
+    \textbf{9} & 7.01** & 8.98** & 4.31** & -0.89 & 0.42  &       & \textbf{9} & 1.92** & 2.02** & 0.83** & -0.15 & 0.05 \\
+    \textbf{12} & 4.66** & 7.66** & 9.15** & 2.71** & -0.46 &       & \textbf{12} & 1.34** & 1.95** & 1.77** & 0.74** & -0.10 \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{Avg} & 6.61  & 5.34  & 2.66  & -0.24 & -0.36 &       & \textbf{Avg} & 1.75  & 1.24  & 0.51  & -0.02 & -0.07 \\
+    \midrule
+          & \multicolumn{12}{l}{PANEL B: High and Low Momentum Returns and Sharpe Ratios} \\
+    \midrule
+          & \multicolumn{5}{c}{\textbf{High Momentum Portfolios}} &       &       & \multicolumn{5}{c}{\textbf{Low Momentum Portfolios}} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Excess Returns} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 0.21  & 0.14  & 0.96  & 0.45  & -0.10 &       & \textbf{1} & -1.41 & -0.50 & -0.33 & -0.29 & -0.41 \\
+    \textbf{3} & 7.63** & 0.28  & 0.85  & -0.25 & 0.46  &       & \textbf{3} & 5.82** & -0.91 & -1.22 & -1.51 & -1.51 \\
+    \textbf{6} & 5.09** & 6.47** & 0.30  & -0.71 & -0.07 &       & \textbf{6} & 3.48** & 4.36** & -0.73 & -0.70 & -0.11 \\
+    \textbf{9} & 4.31** & 5.01** & 3.08** & -0.20 & 0.99  &       & \textbf{9} & 2.59** & 3.83** & 1.20  & -0.69 & -0.58 \\
+    \textbf{12} & 3.29** & 4.69** & 5.35** & 1.58  & -0.42 &       & \textbf{12} & 1.33  & 2.87** & 3.71** & 1.12  & -0.04 \\
+    \midrule
+          & \multicolumn{5}{c}{Sharpe Ratios}     &       &       & \multicolumn{5}{c}{Sharpe Ratios} \\
+    \midrule
+          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 0.06* & 0.03  & 0.22  & 0.13  & -0.02 &       & \textbf{1} & -0.33** & -0.13** & -0.07 & -0.08 & -0.10 \\
+    \textbf{3} & 2.47** & 0.06* & 0.14* & -0.07 & 0.10  &       & \textbf{3} & 1.34** & -0.22** & -0.30 & -0.38 & -0.22 \\
+    \textbf{6} & 1.62** & 2.02** & 0.05** & -0.13 & -0.02 &       & \textbf{6} & 0.84  & 0.92  & -0.20 & -0.30 & -0.02 \\
+    \textbf{9} & 1.34** & 1.61** & 0.65** & -0.04 & 0.14  &       & \textbf{9} & 0.67  & 0.79  & 0.27  & -0.22 & -0.13 \\
+    \textbf{12} & 0.99** & 1.54** & 1.31** & 0.44** & -0.10 &       & \textbf{12} & 0.35  & 0.63  & 0.69** & 0.28  & -0.01 \\
+    \bottomrule
+    \end{tabular}%
+    \end{adjustwidth}
+  \label{EWTCR}%
+\end{table}%
+
+The performance for the equally weighted momentum portfolios presented in the previous sub-section show that these strategies are in fact positively significant and appealing; however, an important question that we address in this section is whether or not these strategies' returns can survive the transaction-cost hit.\\
+
+Strategies with 1 month holding periods are re-balanced every month which would result in more trades and as a result, a larger transaction cost deduction from our overall returns. This is highlighted with the fact that 1 month holding period long-short momentum strategies on average incur a 3.58\% annual deduction from excess returns, compared with 12 month holding period strategies which incur a 0.352\% deduction.\\
+
+From table \ref{EWTCR}, it is evident that even after considering transaction costs, momentum strategies with short holding periods produce significantly positive excess returns. In particular, one month holding period strategies generate 6.61\% excess return per year and Sharpe ratio value of 1.75 on average. Furthermore, from Panel B, it is evident that buying high momentum currencies remains more profitable than selling low momentum currencies.
+However, even when taking this into account, MOM(3,1) remains the most profitable strategy and still produces significant excess returns of 13.86\% pa for equally weighted strategy and 31.87\% pa for return weighted with Sharpe ratios of 3.45 and 3.18. This suggests that this momentum strategies in emerging FX markets are still able to produce significantly positive results even-though they experience large spreads. And despite holding periods of 1 month incurring larger costs over the long run, they still remain the strongest performers.
+
+
+The implementation of transaction costs that in this paper is actually an over measurement as we did not take into account positions which remained in our portfolios at the end of the holding period and were subsequently held across multiple holding periods. If we considered this scenario, transaction costs would have been less than what we measured thus making the results even more impressive.
+
+
+\begin{table}[htbp!]
+  \centering
+  \toprule
+  \caption{Weighted Momentum Results After Transaction Costs}
+  Reported below are the results for the return (Panel A) and risk (Panel B) weighted long-short momentum portfolios, where annualised average excess returns are displayed in the left tables and annualised Sharpe ratios are displayed in the right tables. The ’Avg’ row in each table display the average results in that table for each holding period.
+  \begin{adjustwidth}{-1.25cm}{}
+    \begin{tabular}{rrrrrrrrrrrrr}
+          &       &       &       &       &       &       &       &       &       &       &       &  \\
+    \midrule
+          & \multicolumn{12}{l}{PANEL A: Return Weighted Excess Returns and Sharpe Ratios} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Sharpe Ratios} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \multicolumn{1}{c}{\textit{\textbf{f}}} & \multicolumn{1}{l}{\textbf{1}} & \multicolumn{1}{l}{\textbf{3}} & \multicolumn{1}{l}{\textbf{6}} & \multicolumn{1}{l}{\textbf{9}} & \multicolumn{1}{l}{\textbf{12}} &       & \multicolumn{1}{c}{\textit{\textbf{f}}} & \multicolumn{1}{l}{\textbf{1}} & \multicolumn{1}{l}{\textbf{3}} & \multicolumn{1}{l}{\textbf{6}} & \multicolumn{1}{l}{\textbf{9}} & \multicolumn{1}{l}{\textbf{12}} \\
+\cmidrule{2-6}\cmidrule{9-13}    \multicolumn{1}{c}{\textbf{1}} & \multicolumn{1}{l}{1.14} & \multicolumn{1}{l}{-1.01} & \multicolumn{1}{l}{0.78} & \multicolumn{1}{l}{-0.11} & \multicolumn{1}{l}{-0.96} &       & \multicolumn{1}{c}{\textbf{1}} & \multicolumn{1}{l}{0.14} & \multicolumn{1}{l}{-0.11} & \multicolumn{1}{l}{0.08} & \multicolumn{1}{l}{-0.02} & \multicolumn{1}{l}{-0.10} \\
+    \multicolumn{1}{c}{\textbf{3}} & \multicolumn{1}{l}{31.87**} & \multicolumn{1}{l}{0.28} & \multicolumn{1}{l}{-0.34} & \multicolumn{1}{l}{-0.31} & \multicolumn{1}{l}{-3.01} &       & \multicolumn{1}{c}{\textbf{3}} & \multicolumn{1}{l}{3.18**} & \multicolumn{1}{l}{0.03} & \multicolumn{1}{l}{-0.03} & \multicolumn{1}{l}{-0.05} & \multicolumn{1}{l}{-0.24} \\
+    \multicolumn{1}{c}{\textbf{6}} & \multicolumn{1}{l}{20.24**} & \multicolumn{1}{l}{23.95**} & \multicolumn{1}{l}{0.02} & \multicolumn{1}{l}{-0.50} & \multicolumn{1}{l}{-0.56} &       & \multicolumn{1}{c}{\textbf{6}} & \multicolumn{1}{l}{2.31**} & \multicolumn{1}{l}{2.33**} & \multicolumn{1}{l}{0.00} & \multicolumn{1}{l}{-0.05} & \multicolumn{1}{l}{-0.05} \\
+    \multicolumn{1}{c}{\textbf{9}} & \multicolumn{1}{l}{14.72**} & \multicolumn{1}{l}{19.24**} & \multicolumn{1}{l}{11.77**} & \multicolumn{1}{l}{-1.69} & \multicolumn{1}{l}{-1.98} &       & \multicolumn{1}{c}{\textbf{9}} & \multicolumn{1}{l}{2.00**} & \multicolumn{1}{l}{1.83**} & \multicolumn{1}{l}{0.88**} & \multicolumn{1}{l}{-0.19} & \multicolumn{1}{l}{-0.16} \\
+    \multicolumn{1}{c}{\textbf{12}} & \multicolumn{1}{l}{10.77**} & \multicolumn{1}{l}{15.70**} & \multicolumn{1}{l}{19.15**} & \multicolumn{1}{l}{4.27} & \multicolumn{1}{l}{-2.07} &       & \multicolumn{1}{c}{\textbf{12}} & \multicolumn{1}{l}{1.52**} & \multicolumn{1}{l}{1.57**} & \multicolumn{1}{l}{1.27**} & \multicolumn{1}{l}{0.41**} & \multicolumn{1}{l}{-0.17} \\
+\cmidrule{2-6}\cmidrule{9-13}    \multicolumn{1}{c}{\textbf{Avg}} & \multicolumn{1}{l}{15.75} & \multicolumn{1}{l}{11.63} & \multicolumn{1}{l}{6.28} & \multicolumn{1}{l}{0.33} & \multicolumn{1}{l}{-1.71} &       &       & \multicolumn{1}{l}{1.83} & \multicolumn{1}{l}{1.13} & \multicolumn{1}{l}{0.44} & \multicolumn{1}{l}{0.02} & \multicolumn{1}{l}{-0.15} \\
+    \midrule
+          & \multicolumn{12}{l}{PANEL B: Risk Weighted Excess Returns and Sharpe Ratios} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Sharpe Ratios} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \multicolumn{1}{c}{\textit{\textbf{f}}} & \multicolumn{1}{l}{\textbf{1}} & \multicolumn{1}{l}{\textbf{3}} & \multicolumn{1}{l}{\textbf{6}} & \multicolumn{1}{l}{\textbf{9}} & \multicolumn{1}{l}{\textbf{12}} &       & \multicolumn{1}{c}{\textit{\textbf{f}}} & \multicolumn{1}{l}{\textbf{1}} & \multicolumn{1}{l}{\textbf{3}} & \multicolumn{1}{l}{\textbf{6}} & \multicolumn{1}{l}{\textbf{9}} & \multicolumn{1}{l}{\textbf{12}} \\
+\cmidrule{2-6}\cmidrule{9-13}    \multicolumn{1}{c}{\textbf{1}} & \multicolumn{1}{l}{-3.93*} & \multicolumn{1}{l}{-0.12} & \multicolumn{1}{l}{1.07} & \multicolumn{1}{l}{0.05} & \multicolumn{1}{l}{-1.41} &       & \multicolumn{1}{c}{\textbf{1}} & \multicolumn{1}{l}{-0.45*} & \multicolumn{1}{l}{-0.02} & \multicolumn{1}{l}{0.15} & \multicolumn{1}{l}{0.01} & \multicolumn{1}{l}{-0.18} \\
+    \multicolumn{1}{c}{\textbf{3}} & \multicolumn{1}{l}{19.28**} & \multicolumn{1}{l}{-1.03} & \multicolumn{1}{l}{-1.69} & \multicolumn{1}{l}{-1.51} & \multicolumn{1}{l}{-2.43} &       & \multicolumn{1}{c}{\textbf{3}} & \multicolumn{1}{l}{2.50**} & \multicolumn{1}{l}{-0.13} & \multicolumn{1}{l}{-0.19} & \multicolumn{1}{l}{-0.29} & \multicolumn{1}{l}{-0.32} \\
+    \multicolumn{1}{c}{\textbf{6}} & \multicolumn{1}{l}{12.06**} & \multicolumn{1}{l}{14.91**} & \multicolumn{1}{l}{-1.69} & \multicolumn{1}{l}{-1.38} & \multicolumn{1}{l}{-0.23} &       & \multicolumn{1}{c}{\textbf{6}} & \multicolumn{1}{l}{1.72**} & \multicolumn{1}{l}{1.84**} & \multicolumn{1}{l}{-0.23} & \multicolumn{1}{l}{-0.20} & \multicolumn{1}{l}{-0.04} \\
+    \multicolumn{1}{c}{\textbf{9}} & \multicolumn{1}{l}{9.87**} & \multicolumn{1}{l}{12.05**} & \multicolumn{1}{l}{5.17*} & \multicolumn{1}{l}{-1.02} & \multicolumn{1}{l}{-1.16} &       & \multicolumn{1}{c}{\textbf{9}} & \multicolumn{1}{l}{1.49**} & \multicolumn{1}{l}{1.53**} & \multicolumn{1}{l}{0.55**} & \multicolumn{1}{l}{-0.14} & \multicolumn{1}{l}{-0.13} \\
+    \multicolumn{1}{c}{\textbf{12}} & \multicolumn{1}{l}{6.38**} & \multicolumn{1}{l}{10.20**} & \multicolumn{1}{l}{11.49**} & \multicolumn{1}{l}{4.16*} & \multicolumn{1}{l}{-1.26} &       & \multicolumn{1}{c}{\textbf{12}} & \multicolumn{1}{l}{1.02**} & \multicolumn{1}{l}{1.41**} & \multicolumn{1}{l}{1.40**} & \multicolumn{1}{l}{0.58**} & \multicolumn{1}{l}{-0.17} \\
+\cmidrule{2-6}\cmidrule{9-13}    \multicolumn{1}{c}{\textbf{Avg}} & \multicolumn{1}{l}{8.73} & \multicolumn{1}{l}{7.20} & \multicolumn{1}{l}{2.87} & \multicolumn{1}{l}{0.06} & \multicolumn{1}{l}{-1.30} &       &       & \multicolumn{1}{l}{1.26} & \multicolumn{1}{l}{0.93} & \multicolumn{1}{l}{0.34} & \multicolumn{1}{l}{-0.01} & \multicolumn{1}{l}{-0.17} \\
+    \midrule
+          &       &       &       &       &       &       &       &       &       &       &       &  \\
+    \end{tabular}%
+    \end{adjustwidth}
+  \label{WTCR}%
+\end{table}%
+
+
+\newpage
+\section{Currency Market Risk Factors}
+
+The goal of this section is to analyse various common market risk factors in an attempt to explain the variation in emerging currency market excess returns.\\
+
+This paper follows a similar methodology to the one presented by Baku et al.(2019) in their paper on factor investing in currency markets, where they develop a four factor model that uses market risk factors based on momentum, interest rate differentials (carry factor) and currency value in an attempt to capture some of the key features driving the market returns. However, in this paper a low volatility factor is added to the model, and cross-sectional momentum and time-series momentum are considered separately due to them having very strong correlation (Table \ref{TSCOR}). Therefore the model considered in this paper is still a 4 factor model, and uses volatility (VOL), value (VAL), carry (CAR), and momentum (MOM) factors to model the market returns. This model is displayed in the following equation:
+$$ R_t = \alpha + \beta^{CAR} R^{CAR}_t + \beta^{VAL} R^{VAL}_t + \beta^{MOM} R^{MOM}_t + \beta^{VOL} R^{VOL}_t + \epsilon$$
+where $R_t$ is the cross sectional market return at time $t$. $R^{X}_t$ is the returns based on factor X and all factor returns are equally weighted with weights summing to 1.\\
+
+First, a method of calculating cross-sectional market returns must be specified. For this, we simply take the average of the returns for the currencies in our emerging cross-section.\\
+
+For the carry trade factor, countries are ranked based on their interest rates. The top one-third countries with the highest interest rates are bought and the bottom one-third are sold. This is similar to how the momentum factor was constructed with a ranking based on interest rates instead of returns. \\
+
+In stock focused literature, the value factor is determined by a measure of an assets 'book' value compared to its market value. The common idea shown by Asness et al.(2013) is that assets which are cheaper outperform those that are more expensive. In other words, assets which are under-priced out perform those that are over-priced. Translating this concept into the currency asset class, this paper uses the currencies purchasing power parity relative to the USD as a measure of its 'book' value. The value factor is then set up as follows:
+$$Value^i_t = \hat{s}^i_t - s^i_t$$ , where $\hat{s}$ is the theoretical book price and $s$ is the market price. 
+Currencies are then ranked by this value factor and the top third are bought and the bottom third are sold.\\
+
+For the low volatility factor, the emerging currencies are ranked each year based on their volatility over the last 12 months. The currencies are then split into two groups of high volatility and low volatility. Long positions are then taken with the low volatility group currencies and short positions are taken with the high volatility group currencies.\\
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\linewidth]{Graphs/QQPlots.png}
+    \caption{This set of graphs presents quantile-quantile plots for the distribution of monthly excess returns for each factor we consider over the sample period (1999-2020). The red line represents a normal distribution}
+    \label{fig:my_label}
+\end{figure}
+
+
+
+\subsection{Results}
+From Table \ref{REG}, it can be seen that the four factor model implemented in this paper explains 55.41\% of the variation in the market's excess returns, suggesting that there is a clear connection between market risk factors and excess returns.\\
+
+It is evident that both the carry and value risk factors have positive loading on excess returns. This implies that as high interest rate currencies out-perform low interest rate currencies, the excess market returns tend to be positive. Similarly market returns also tend to be positive when under-valued currencies out-perform over-valued currencies.\\
+
+The volatility risk factor loads negatively on the market returns which suggests that the market performs better when high volatility currencies out-perform low volatility currencies. Moreover, the market returns seem to be more sensitive to the volatility factor compared to the others suggesting that this factor may carries more importance in explaining the market's excess returns.\\
+
+Furthermore, the momentum risk factor loads negatively on the excess returns suggesting that when low momentum currencies out perform high momentum currencies, the market's excess returns tend to be higher. \\
+
+A significant $\alpha$ value greater than one is produced by the model suggesting that there is a large amount of risk not captured by the factors in the model.\\
+
+\begin{table}[hbp!]
+  \centering
+  \caption{Regression}
+  This table shows the 4 factors CAR, VAL, VOL and MOM regressed on the market excess returns. The MOM factor uses the MOM(3,1) returns. The intercept for the regression is reported as $\alpha$ and coefficients are reported with their t-statistic value. The model's F-statistic and $R^2$ values are also reported.
+    \begin{tabular}{rrrrrrrr}
+          &       &       &       &       &       &       &  \\
+    \midrule
+          & \multicolumn{5}{c}{Regression Coefficients} &       & \multicolumn{1}{l}{Model} \\
+          & \multicolumn{1}{c}{$\alpha$} & \multicolumn{1}{c}{$\beta^{CAR}$} & \multicolumn{1}{c}{$\beta^{VAL}$} & \multicolumn{1}{c}{$\beta^{VOL}$} & \multicolumn{1}{c}{$\beta^{MOM}$} &       &  \\
+\cmidrule{2-6}\cmidrule{8-8}    \multicolumn{1}{l}{Coefficients} & \multicolumn{1}{c}{0.36} & \multicolumn{1}{c}{0.15} & \multicolumn{1}{c}{0.14} & \multicolumn{1}{c}{-0.95} & \multicolumn{1}{c}{-0.22} & \multicolumn{1}{l}{$R^2$} & \multicolumn{1}{c}{55.41\%} \\
+    \multicolumn{1}{l}{T Stat} & \multicolumn{1}{c}{3.18} & \multicolumn{1}{c}{3.17} & \multicolumn{1}{c}{1.86} & \multicolumn{1}{c}{-16.08} & \multicolumn{1}{c}{-3.50} & \multicolumn{1}{l}{F Stat} & \multicolumn{1}{c}{79.55} \\
+    \midrule
+          &       &       &       &       &       &       &  \\
+    \end{tabular}%
+  \label{REG}%
+\end{table}%
+
+\newpage
+\section{Robusteness}
+\subsection{Exchange Rate Classifications}
+
+The question arises as to whether considering a countries exchange rate classification when forming our momentum strategies can have an impact on results. In order to answer this question, currency classifications are considered using the IMF coarse definition\footnote{Iltzetzki et al.(2016)}. If a currency is tightly fixed to some price mark or range, 'pegged', it should not add much value to our momentum portfolios compared to currencies that are allowed to float in value. In order to assess this, two different cross-sections are created with varying classification conditions. Table \ref{IMFC} and Table \ref{IMFX} show the classification criteria and the country exchange rate classifications (based on Iltzetzki  ref) for all emerging countries in each year of the sample. The first cross-section removes all countries with IMF rating 1, and the second removes all countries with IMF rating 1 and 2. The number of countries satisfying each grouping can be seen in Figure \ref{TICKERS}. \\
+
+When comparing results in Table \ref{PEGR} with the equally weighted benchmark momentum returns, it is clear that performance is slightly more favourable to the momentum strategies implemented using countries that are not pegged.
+
+
+\begin{table}[htb!]
+  \centering
+  \caption{This table shows results for equal weighted strategies after removing all countries with exchange rate classification rating of 1(Panel A) and classification of 1 and 2(Panel B) based on the IMF coarse definitions.}
+    \begin{tabular}{ccccccccccccc}
+    \toprule
+    PANEL A
+    \\
+    \hline
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Sharpe Ratios} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 2.78  & 0.28  & 1.41  & 0.12  & -1.13 &       & \textbf{1} & 0.63  & 0.05  & 0.22  & 0.04  & -0.19 \\
+    \textbf{3} & 18.67 & 0.45  & 0.50  & -1.97 & -2.16 &       & \textbf{3} & 4.28  & 0.08  & 0.07  & -0.36 & -0.21 \\
+    \textbf{6} & 12.94 & 12.80 & 1.30  & -1.22 & -0.75 &       & \textbf{6} & 3.19  & 2.54  & 0.21  & -0.25 & -0.15 \\
+    \textbf{9} & 10.66 & 10.39 & 5.30  & -0.79 & 0.70  &       & \textbf{9} & 2.78  & 2.12  & 0.91  & -0.12 & 0.07 \\
+    \textbf{12} & 7.84  & 8.87  & 10.26 & 1.95  & -1.07 &       & \textbf{12} & 2.12  & 2.09  & 1.73  & 0.47  & -0.21 \\
+    \midrule
+    PANEL B\\
+    \hline
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Sharpe Ratios} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 2.28  & -0.21 & 1.48  & -0.63 & 0.06  &       & \textbf{1} & 0.43  & -0.03 & 0.20  & -0.11 & 0.01 \\
+    \textbf{3} & 18.67 & 0.13  & 0.39  & -1.67 & -2.15 &       & \textbf{3} & 3.67  & 0.02  & 0.05  & -0.23 & -0.20 \\
+    \textbf{6} & 12.87 & 12.38 & 0.08  & -1.31 & -2.15 &       & \textbf{6} & 2.67  & 2.11  & 0.01  & -0.22 & -0.38 \\
+    \textbf{9} & 10.87 & 9.74  & 4.62  & -1.18 & -0.48 &       & \textbf{9} & 2.20  & 1.68  & 0.67  & -0.16 & -0.04 \\
+    \textbf{12} & 8.13  & 9.22  & 10.04 & 2.41  & -2.17 &       & \textbf{12} & 1.65  & 1.75  & 1.57  & 0.44  & -0.37 \\
+    \bottomrule
+    \end{tabular}%
+  \label{PEGR}%
+\end{table}%
+
+
+\newpage
+
+\subsection{Size of Universe}
+
+The size of the universe for which these strategies were tested on included an average of 14 countries per year. The results in this paper were obtained by splitting the universe into thirds. In table \ref{SPLIT}, we present results the momentum strategies implementing splits of 6 and 9 to examine whether this could have had an affect on the results. It seems that increasing the split produces higher excess returns for most strategies, but lower Sharpe ratios. It is unclear whether this is due to there being less countries in the selection or whether it is related to the countries included and excluded in each split. This is worth further investigation.
+
+\begin{table}[htb!]
+  \centering
+  \caption{Reported below are the results for equally weighted momentum strategies where instead of splitting our universe into 3, taking the top third and bottom third as high and low momentum groups, we split them by 6 and 9.}
+    \begin{tabular}{ccccccccccccc}
+    \toprule
+          & \multicolumn{5}{c}{Split = 6}         &       &       & \multicolumn{5}{c}{Split = 9} \\
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Excess Returns} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 2.74  & 1.21  & 1.52  & 0.25  & 0.26  &       & \textbf{1} & 3.16  & 2.05  & 1.40  & -0.13 & -0.84 \\
+    \textbf{3} & 25.09 & 1.49  & 0.82  & -2.49 & -1.85 &       & \textbf{3} & 31.86 & 2.07  & 1.50  & -0.62 & -0.15 \\
+    \textbf{6} & 18.73 & 17.68 & 0.20  & -1.39 & -1.16 &       & \textbf{6} & 24.19 & 22.20 & -0.27 & 0.05  & -1.67 \\
+    \textbf{9} & 14.41 & 14.11 & 6.72  & -1.62 & -0.81 &       & \textbf{9} & 16.56 & 18.33 & 9.46  & -1.42 & -1.13 \\
+    \textbf{12} & 10.94 & 12.14 & 13.63 & 4.01  & 0.12  &       & \textbf{12} & 13.81 & 14.68 & 17.23 & 4.99  & -1.26 \\
+    \midrule
+          & \multicolumn{5}{c}{Sharpe ratios}     &       &       & \multicolumn{5}{c}{Sharpe ratios} \\
+    \midrule
+          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 0.50  & 0.18  & 0.20  & 0.06  & 0.04  &       & \textbf{1} & 0.43  & 0.22  & 0.12  & -0.02 & -0.10 \\
+    \textbf{3} & 4.48  & 0.25  & 0.12  & -0.38 & -0.19 &       & \textbf{3} & 4.34  & 0.22  & 0.12  & -0.08 & -0.01 \\
+    \textbf{6} & 3.45  & 2.52  & 0.03  & -0.21 & -0.19 &       & \textbf{6} & 3.32  & 2.43  & -0.02 & 0.01  & -0.17 \\
+    \textbf{9} & 2.72  & 2.15  & 0.89  & -0.26 & -0.13 &       & \textbf{9} & 2.45  & 2.00  & 0.85  & -0.14 & -0.09 \\
+    \textbf{12} & 2.27  & 2.00  & 1.90  & 0.76  & 0.02  &       & \textbf{12} & 2.32  & 1.68  & 1.63  & 0.65  & -0.13 \\
+    \bottomrule
+    \end{tabular}%
+  \label{SPLIT}%
+\end{table}%
+
+\newpage
+\section{Discussion and Conclusion}
+
+In this paper, a series of short-term momentum strategies were explored with formation and holding periods below one year. Two methods of weighting momentum based strategies based on returns and risk were constructed and a measure of transaction costs were implemented within our results. \\
+
+Overall, momentum strategies have shown to be profitable in the emerging currency market yielding remarkable returns especially for smaller holding periods. It is clear that as the length of holding period increases, the profitability of these strategies reduces which is consistent with previous results in the literature (Jegadeesh and Titman(1993), Menkhoff et al.(2012)). The reason behind this can be explained with behavioural theories as it seems consistent investor over reaction and delayed under reaction.\\
+
+Furthermore, it can be seen that these strategies are still able to produce remarkable results even after transaction costs are considered, making this a highly appealing strategy. \\
+
+Moreover, it is found that simply weighting these strategies by returns or risk can improve performance drastically as opposed to the standard equally weighted method. The best performing strategy is found to be with a 3 month formation period and 1 month holding period before and after weighting. \\
+
+The relationship between various market based factors and emerging currency returns were explored by forming a four factor model and regressing the market returns on the value, carry, low volatility and momentum market factors. It is seen that the market risk factors can explain some the market risk premium. \\
+
+In the future, it would be good to verify the results found in this paper with an extended and more in-depth analysis of momentum strategies in the emerging currency class, to see highlight any flaws with these strategies in real-world implementation. Additionally, exploring the driving factors and explanations for the momentum returns, in addition to exploring the macroeconomic risk factors that potentially drive these market returns would provide topics for future research.
+
+\newpage
+
+\bibliographystyle{plain}
+\bibliography{bibliography.bib}
+\nocite{asness2013value}
+\nocite{jegadeesh2011momentum}
+\nocite{jegadeesh2001profitability}
+\nocite{conrad1998anatomy}
+\nocite{grobystextordfeminine1currency}
+\nocite{menkhoff2012currency}
+\nocite{menkhoff2012carry}
+\nocite{moskowitz2012time}
+\nocite{okunev2003momentum}
+\nocite{asness2014fact}
+\nocite{rouwenhorst1998international}
+\nocite{hurst2017century}
+\nocite{geczy2017two}
+\nocite{asness2013value}
+\nocite{filippou2018global}
+\nocite{hu2021emerging}
+\nocite{lustig2011common}
+\nocite{taylor1995economics}
+\nocite{sarno2003economics}
+\nocite{baku2019factor}
+\nocite{neely2011technical}
+\nocite{taylor1992use}
+\nocite{menkhoff2012carry}
+\nocite{chong2009momentum}
+\nocite{tajaddini2012momentum}
+\nocite{zhuang2018improving}
+\nocite{reinhart2004modern}
+
+\newpage
+
+
+\appendix
+\LARGE{\textbf{Appendix}}
+\begin{figure}[hp]
+    \centering
+
+    \begin{minipage}{1\textwidth}
+    \centering
+    \caption{This figure has the same setup as Figure \ref{CS31}, but displays data for the MOM(6,1) strategy.}
+    \begin{adjustwidth}{-0.25cm}{}
+    \includegraphics[width=1.05\textwidth]{Graphs/MOM_6_1_CUMPLOT.png}
+    \end{adjustwidth}
+    \label{CS61}
+    \end{minipage}
+
+    \begin{minipage}{1\textwidth}
+    \centering
+    \caption{This figure has the same setup as Figure \ref{MR31}, but displays data for the MOM(6,1) strategy.}
+    \begin{adjustwidth}{-0.5cm}{}
+    \includegraphics[width=1.05\textwidth]{Graphs/MOM_EXReturns_6_1.png}
+    \end{adjustwidth}
+    \label{MR61}
+    \end{minipage}
+\end{figure}
+
+
+% Table generated by Excel2LaTeX from sheet 'Table2'
+\begin{table}[htbp]
+  \centering
+  \caption{Return Weighted high and low: Reported below are the annualized average excess returns and the Sharpe ratios for the 'return' weighted high and low momentum strategies. Currencies in the high momentum portfolios were bought and the currencies in the low momentum portfolios were sold. Formation $f$ periods and holding $h$ periods are in months and our sample spans from December 1998 untill December 2020. Monthly returns are used to compute the values.}
+    \begin{tabular}{crrrrrrcrrrrr}
+          & \multicolumn{5}{c}{\textbf{High momentum 'Long' portfolios}} &       &       & \multicolumn{5}{c}{\textbf{Low momentum' Short' portfolios}} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Excess Returns} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 3.43  & 0.78  & 1.66  & 1.10  & -0.31 &       & \textbf{1} & 1.69  & -0.31 & 0.04  & -0.73 & -0.26 \\
+    \textbf{3} & 16.30 & 1.55  & 1.01  & 0.41  & -1.07 &       & \textbf{3} & 17.79 & 0.00  & -0.62 & -0.17 & -1.63 \\
+    \textbf{6} & 11.47 & 12.45 & 0.81  & -0.28 & -1.09 &       & \textbf{6} & 11.74 & 11.83 & -0.03 & 0.40  & 0.89 \\
+    \textbf{9} & 9.89  & 9.83  & 8.17  & -1.14 & -1.48 &       & \textbf{9} & 7.63  & 10.05 & 4.18  & 0.04  & -0.14 \\
+    \textbf{12} & 8.47  & 8.96  & 11.13 & 1.67  & -1.64 &       & \textbf{12} & 5.34  & 7.55  & 8.34  & 3.27  & -0.07 \\
+    \midrule
+          & \multicolumn{5}{c}{Sharpe ratios}     &       &       & \multicolumn{5}{c}{Sharpe ratios} \\
+    \midrule
+          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-13}    \textbf{1} & 0.68  & 0.10  & 0.21  & 0.25  & -0.04 &       & \textbf{1} & 0.24  & -0.06 & 0.01  & -0.18 & -0.04 \\
+    \textbf{3} & 3.07  & 0.18  & 0.08  & 0.09  & -0.11 &       & \textbf{3} & 1.74  & 0.00  & -0.13 & -0.03 & -0.18 \\
+    \textbf{6} & 2.29  & 1.66  & 0.06  & -0.03 & -0.10 &       & \textbf{6} & 1.40  & 1.16  & -0.01 & 0.09  & 0.14 \\
+    \textbf{9} & 1.97  & 1.38  & 0.64  & -0.15 & -0.14 &       & \textbf{9} & 1.16  & 1.02  & 0.55  & 0.01  & -0.02 \\
+    \textbf{12} & 1.59  & 1.35  & 0.91  & 0.24  & -0.15 &       & \textbf{12} & 0.89  & 0.82  & 0.67  & 0.42  & -0.01 \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:addlabel}%
+\end{table}%
+
+
+% Table generated by Excel2LaTeX from sheet 'Table2'
+\begin{table}[htbp]
+  \centering
+  \caption{Risk Weighted high and low: Reported below are the annualized average excess returns and the Sharpe ratios for the 'Sharpe' weighted high and low momentum strategies. Currencies in the high momentum portfolios were bought and the currencies in the low momentum portfolios were sold. Formation $f$ periods and holding $h$ periods are in months and our sample spans from December 1998 untill December 2020. Monthly returns are used to compute the values.}
+    \begin{tabular}{crrrrrrcrrrrr}
+          & \multicolumn{5}{c}{\textbf{High momentum 'Long' portfolios}} &       &       & \multicolumn{5}{c}{\textbf{Low momentum' Short' portfolios}} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Excess Returns} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 0.43  & 0.53  & 1.38  & 0.89  & -0.26 &       & \textbf{1} & 0.94  & 1.09  & 0.68  & -0.19 & -0.71 \\
+    \textbf{3} & 11.15 & 0.17  & -0.02 & 0.18  & -0.14 &       & \textbf{3} & 12.77 & 0.68  & -0.80 & -1.00 & -1.89 \\
+    \textbf{6} & 8.30  & 7.74  & -0.25 & -0.18 & 0.04  &       & \textbf{6} & 8.60  & 8.47  & -0.39 & -0.45 & 0.17 \\
+    \textbf{9} & 7.02  & 6.28  & 3.62  & -0.20 & 0.15  &       & \textbf{9} & 6.92  & 7.07  & 2.57  & -0.32 & -0.88 \\
+    \textbf{12} & 5.82  & 6.01  & 6.11  & 1.81  & -0.72 &       & \textbf{12} & 4.62  & 5.84  & 6.26  & 2.93  & -0.07 \\
+    \midrule
+          & \multicolumn{5}{c}{Sharpe ratios}     &       &       & \multicolumn{5}{c}{Sharpe ratios} \\
+    \midrule
+          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 0.06  & 0.09  & 0.32  & 0.23  & -0.05 &       & \textbf{1} & 0.15  & 0.16  & 0.09  & -0.04 & -0.11 \\
+    \textbf{3} & 2.57  & 0.02  & 0.00  & 0.04  & -0.02 &       & \textbf{3} & 1.67  & 0.10  & -0.13 & -0.19 & -0.28 \\
+    \textbf{6} & 1.99  & 1.74  & -0.03 & -0.03 & 0.01  &       & \textbf{6} & 1.25  & 0.96  & -0.08 & -0.11 & 0.03 \\
+    \textbf{9} & 1.66  & 1.48  & 0.59  & -0.03 & 0.02  &       & \textbf{9} & 1.08  & 0.86  & 0.33  & -0.07 & -0.13 \\
+    \textbf{12} & 1.26  & 1.50  & 1.26  & 0.37  & -0.14 &       & \textbf{12} & 0.76  & 0.76  & 0.72  & 0.41  & -0.01 \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:addlabel}%
+\end{table}%
+
+
+
+% Table generated by Excel2LaTeX from sheet 'Tables'
+\begin{table}[htbp]
+  \centering
+  \caption{Add caption}
+    \begin{tabular}{ccccccrcccccc}
+    \multicolumn{13}{c}{Return weighted momentum strategy returns after accoutning for transaction costs} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Sharpe Ratios} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 1.14  & -1.01 & 0.78  & -0.11 & -0.96 &       & \textbf{1} & 0.14  & -0.11 & 0.08  & -0.02 & -0.10 \\
+    \textbf{3} & 31.87 & 0.28  & -0.34 & -0.31 & -3.01 &       & \textbf{3} & 3.18  & 0.03  & -0.03 & -0.05 & -0.24 \\
+    \textbf{6} & 20.24 & 23.95 & 0.02  & -0.50 & -0.56 &       & \textbf{6} & 2.31  & 2.33  & 0.00  & -0.05 & -0.05 \\
+    \textbf{9} & 14.72 & 19.24 & 11.77 & -1.69 & -1.98 &       & \textbf{9} & 2.00  & 1.83  & 0.88  & -0.19 & -0.16 \\
+    \textbf{12} & 10.77 & 15.70 & 19.15 & 4.27  & -2.07 &       & \textbf{12} & 1.52  & 1.57  & 1.27  & 0.41  & -0.17 \\
+    \midrule
+          &       &       &       &       &       &       &       &       &       &       &       &  \\
+          &       &       &       &       &       &       &       &       &       &       &       &  \\
+    \multicolumn{7}{c}{\textbf{High momentum portfolios - 'Long' portfolios}} & \multicolumn{6}{c}{\textbf{Low momentum portfolios - 'Short' portfolios}} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Excess Returns} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 1.46  & -0.03 & 1.23  & 0.76  & -0.47 &       & \textbf{1} & -0.31 & -0.98 & -0.44 & -0.87 & -0.49 \\
+    \textbf{3} & 14.02 & 0.84  & 0.59  & 0.08  & -1.26 &       & \textbf{3} & 15.84 & -0.56 & -0.93 & -0.39 & -1.75 \\
+    \textbf{6} & 9.26  & 11.84 & 0.39  & -0.80 & -1.31 &       & \textbf{6} & 10.13 & 11.15 & -0.37 & 0.29  & 0.75 \\
+    \textbf{9} & 7.98  & 9.16  & 7.77  & -1.60 & -1.71 &       & \textbf{9} & 6.28  & 9.45  & 3.85  & -0.09 & -0.27 \\
+    \textbf{12} & 6.35  & 8.26  & 10.80 & 1.23  & -1.83 &       & \textbf{12} & 4.18  & 7.01  & 7.94  & 3.04  & -0.24 \\
+    \midrule
+          & \multicolumn{5}{c}{Sharpe ratios}     &       &       & \multicolumn{5}{c}{Sharpe ratios} \\
+    \midrule
+          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 0.27  & 0.00  & 0.15  & 0.18  & -0.06 &       & \textbf{1} & -0.04 & -0.20 & -0.06 & -0.22 & -0.08 \\
+    \textbf{3} & 2.61  & 0.09  & 0.05  & 0.02  & -0.13 &       & \textbf{3} & 1.59  & -0.09 & -0.20 & -0.08 & -0.20 \\
+    \textbf{6} & 1.85  & 1.60  & 0.03  & -0.09 & -0.13 &       & \textbf{6} & 1.24  & 1.14  & -0.09 & 0.07  & 0.12 \\
+    \textbf{9} & 1.59  & 1.30  & 0.61  & -0.19 & -0.16 &       & \textbf{9} & 0.99  & 0.99  & 0.52  & -0.02 & -0.04 \\
+    \textbf{12} & 1.19  & 1.26  & 0.88  & 0.15  & -0.17 &       & \textbf{12} & 0.72  & 0.79  & 0.66  & 0.39  & -0.04 \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:addlabel}%
+\end{table}%
+
+% Table generated by Excel2LaTeX from sheet 'Tables'
+\begin{table}[htbp]
+  \centering
+  \caption{Add caption}
+    \begin{tabular}{ccccccccccccc}
+    \multicolumn{13}{c}{Risk weighted momentum strategy returns after accoutning for transaction costs} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Sharpe Ratios} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & -3.93 & -0.12 & 1.07  & 0.05  & -1.41 &       & \textbf{1} & -0.45 & -0.02 & 0.15  & 0.01  & -0.18 \\
+    \textbf{3} & 19.28 & -1.03 & -1.69 & -1.51 & -2.43 &       & \textbf{3} & 2.50  & -0.13 & -0.19 & -0.29 & -0.32 \\
+    \textbf{6} & 12.06 & 14.91 & -1.69 & -1.38 & -0.23 &       & \textbf{6} & 1.72  & 1.84  & -0.23 & -0.20 & -0.04 \\
+    \textbf{9} & 9.87  & 12.05 & 5.17  & -1.02 & -1.16 &       & \textbf{9} & 1.49  & 1.53  & 0.55  & -0.14 & -0.13 \\
+    \textbf{12} & 6.38  & 10.20 & 11.49 & 4.16  & -1.26 &       & \textbf{12} & 1.02  & 1.41  & 1.40  & 0.58  & -0.17 \\
+    \midrule
+          &       &       &       &       &       &       &       &       &       &       &       &  \\
+          &       &       &       &       &       &       &       &       &       &       &       &  \\
+    \multicolumn{7}{c}{\textbf{High momentum portfolios - 'Long' portfolios}} & \multicolumn{6}{c}{\textbf{Low momentum portfolios - 'Short' portfolios}} \\
+    \midrule
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Excess Returns} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & -1.75 & -0.12 & 1.01  & 0.50  & -0.40 &       & \textbf{1} & -2.21 & 0.00  & 0.06  & -0.45 & -1.01 \\
+    \textbf{3} & 8.87  & -0.42 & -0.42 & -0.25 & -0.33 &       & \textbf{3} & 9.63  & -0.62 & -1.27 & -1.26 & -2.11 \\
+    \textbf{6} & 5.82  & 7.18  & -0.67 & -0.70 & -0.16 &       & \textbf{6} & 5.92  & 7.34  & -1.03 & -0.68 & -0.07 \\
+    \textbf{9} & 5.06  & 5.65  & 3.22  & -0.48 & -0.07 &       & \textbf{9} & 4.60  & 6.14  & 1.92  & -0.54 & -1.09 \\
+    \textbf{12} & 3.75  & 5.29  & 5.78  & 1.55  & -0.92 &       & \textbf{12} & 2.55  & 4.73  & 5.55  & 2.59  & -0.34 \\
+    \midrule
+          & \multicolumn{5}{c}{Sharpe ratios}     &       &       & \multicolumn{5}{c}{Sharpe ratios} \\
+    \midrule
+          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & -0.25 & -0.02 & 0.23  & 0.13  & -0.07 &       & \textbf{1} & -0.34 & 0.00  & 0.01  & -0.09 & -0.16 \\
+    \textbf{3} & 1.94  & -0.06 & -0.05 & -0.07 & -0.06 &       & \textbf{3} & 1.26  & -0.10 & -0.21 & -0.25 & -0.31 \\
+    \textbf{6} & 1.27  & 1.64  & -0.08 & -0.11 & -0.03 &       & \textbf{6} & 0.87  & 0.86  & -0.20 & -0.17 & -0.01 \\
+    \textbf{9} & 1.13  & 1.37  & 0.51  & -0.07 & -0.01 &       & \textbf{9} & 0.71  & 0.76  & 0.24  & -0.12 & -0.17 \\
+    \textbf{12} & 0.79  & 1.33  & 1.18  & 0.30  & -0.18 &       & \textbf{12} & 0.42  & 0.61  & 0.63  & 0.37  & -0.05 \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:addlabel}%
+\end{table}%
+
+
+
+\begin{table}[t!]
+  \centering
+  \caption{Momentum Strategy Correlations}
+  This table reports the Pearson correlation coefficients of the returns for all combinations of equally weighted momentum strategies with 1 month holding period. $\rho(x,y)$ represents the correlation between MOM(x,1) and MOM(y,1). Relationships that are statistically significant at the 5\% and 1\% level are reported with * and ** respectively.
+    \begin{tabular}{lccc}
+    \multicolumn{1}{c}{} &       &       &  \\
+    \toprule
+    \multicolumn{1}{r}{} & Total & Long  & Short \\
+    \midrule
+    $\rho(1,3)$ & 0.030 & 0.058 & 0.081 \\
+    $\rho(1,6)$ & 0.033 & 0.072 & 0.003 \\
+    $\rho(1,9)$ & 0.053 & -0.164** & 0.059 \\
+    $\rho(1,12)$ & 0.044 & 0.107 & 0.012 \\
+    $\rho(3,6)$ & 0.019 & 0.069 & 0.103 \\
+    $\rho(3,9)$ & 0.028 & 0.129* & 0.016 \\
+    $\rho(3,12)$ & -0.043 & -0.039 & -0.069 \\
+    $\rho(6,9)$ & -0.023 & 0.002 & 0.014 \\
+    $\rho(6,12)$ & -0.051 & 0.081 & -0.045 \\
+    $\rho(9,12)$ & -0.029 & 0.034 & 0.029 \\
+    \bottomrule
+    \end{tabular}%
+  \label{COR}%
+\end{table}%
+
+
+\begin{table}[htbp]
+  \centering
+  \caption{Reported below are the annualised average excess returns and Sharpe ratios for a high and low volatility sorted portfolios. These are formed by splitting the universe of emerging currencies at the median based on the currencies past idiosyncratic volatility.}
+    \begin{tabular}{rrrrrrrrrrrrr}
+    \toprule
+          & \multicolumn{5}{c}{High volatility}   &       &       & \multicolumn{5}{c}{Low volatility} \\
+          & \multicolumn{5}{c}{Excess Returns}    &       &       & \multicolumn{5}{c}{Excess Returns} \\
+\cmidrule{2-6}\cmidrule{9-13}          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 0.57  & -0.06 & 0.22  & -0.34 & 0.27  &       & \textbf{1} & 3.92  & 1.86  & 2.70  & 1.51  & 1.74 \\
+    \textbf{3} & 19.92 & -0.25 & 0.07  & -2.53 & 0.61  &       & \textbf{3} & 12.29 & 2.62  & 2.08  & -0.14 & -1.72 \\
+    \textbf{6} & 13.41 & 12.10 & -1.19 & -3.55 & -1.36 &       & \textbf{6} & 8.45  & 8.43  & 2.46  & 0.95  & 2.12 \\
+    \textbf{9} & 12.11 & 9.74  & 3.08  & -3.53 & -1.35 &       & \textbf{9} & 6.94  & 7.67  & 4.12  & 1.24  & 2.18 \\
+    \textbf{12} & 9.78  & 9.12  & 9.11  & 0.42  & -0.71 &       & \textbf{12} & 5.38  & 5.84  & 6.92  & 3.47  & 3.17 \\
+    \midrule
+          & \multicolumn{5}{c}{Sharpe ratios}     &       &       & \multicolumn{5}{c}{Sharpe ratios} \\
+    \midrule
+          & \multicolumn{5}{c}{Holding period h}  &       &       & \multicolumn{5}{c}{Holding period h} \\
+    \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} &       & \textit{\textbf{f}} & \textbf{1} & \textbf{3} & \textbf{6} & \textbf{9} & \textbf{12} \\
+\cmidrule{2-6}\cmidrule{9-13}    \textbf{1} & 0.10  & -0.01 & 0.04  & -0.07 & 0.07  &       & \textbf{1} & 0.99  & 0.41  & 0.39  & 0.26  & 0.35 \\
+    \textbf{3} & 3.71  & -0.05 & 0.01  & -0.56 & 0.11  &       & \textbf{3} & 3.44  & 0.55  & 0.29  & -0.01 & -0.10 \\
+    \textbf{6} & 2.46  & 1.99  & -0.21 & -0.53 & -0.28 &       & \textbf{6} & 2.63  & 1.90  & 0.54  & 0.20  & 0.35 \\
+    \textbf{9} & 2.33  & 1.66  & 0.51  & -0.63 & -0.24 &       & \textbf{9} & 2.29  & 1.88  & 0.98  & 0.28  & 0.36 \\
+    \textbf{12} & 1.86  & 1.73  & 1.70  & 0.10  & -0.14 &       & \textbf{12} & 1.83  & 1.82  & 1.77  & 0.71  & 0.52 \\
+    \bottomrule
+    \end{tabular}%
+  \label{VOLSPLIT}%
+\end{table}%
+
+% Table generated by Excel2LaTeX from sheet 'Table'
+\begin{table}[htbp]
+  \centering
+  \caption{This table reports the Pearson correlation coefficient values for the different weighted momentum strategies with identical formation and holding periods.}
+    \begin{tabular}{lccccc}
+    \multicolumn{6}{c}{\textbf{Equal Weighted and Return Weighted Correlation}} \\
+    \midrule
+          & \multicolumn{5}{c}{Formation, Holding period} \\
+    \textit{f=h} & 1     & 3     & 6     & 9     & 12 \\
+    \textit{r} & 0.87** & 0.85** & 0.84** & 0.66** & 0.71** \\
+    \midrule
+          &       &       &       &       &  \\
+    \multicolumn{6}{c}{\textbf{Equal Weighted and Sharpe Weighted Correlation}} \\
+    \midrule
+          & \multicolumn{5}{c}{Formation, Holding period} \\
+    \textit{f=h} & 1     & 3     & 6     & 9     & 12 \\
+    \textit{r} & 0.87** & 0.85** & 0.90** & 0.79** & 0.93** \\
+    \midrule
+          &       &       &       &       &  \\
+    \multicolumn{6}{c}{\textbf{Return Weighted and Sharpe Weighted Correlation}} \\
+    \midrule
+          & \multicolumn{5}{c}{Formation, Holding period} \\
+    \textit{f=h} & 1     & 3     & 6     & 9     & 12 \\
+    \textit{r} & 0.87** & 0.85** & 0.84** & 0.66** & 0.71** \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:addlabel}%
+\end{table}%
+
+
+\begin{table}[htbp]
+  \centering
+    \caption{Cross-Sectional Momentum and Time-Series Momentum: Pearson's correlation coefficient values for cross-sectional and time-series strategies with indentical formation and 1 month holding period.}
+    \begin{tabular}{lccc}
+    \toprule
+    \multicolumn{1}{r}{} & Total & Long  & Short \\
+    $\rho(MOM(1,1),TS(1,1))$ & 0.832** & 0.925** & 0.929** \\
+    $\rho(MOM(3,1),TS(3,1))$ & 0.853** & 0.923** & 0.950** \\
+    $\rho(MOM(6,1),TS(6,1))$ & 0.756** & 0.893** & 0.922** \\
+    $\rho(MOM(9,1),TS(9,1))$ & 0.729** & 0.888** & 0.898** \\
+    $\rho(MOM(12,1),TS(12,1))$ & 0.712** & 0.896** & 0.869** \\
+    \bottomrule
+    \end{tabular}%
+  \label{TSCOR}%
+\end{table}%
+
+
+% Table generated by Excel2LaTeX from sheet 'Table'
+\begin{table}[htbp]
+  \centering
+    \caption{Momentum and Carry: Reported below are the Pearson correlation coefficient values for cross-sectional momentum strategies with 1 month holding and the carry trade strategy.}
+    \begin{tabular}{lccc}
+    \toprule
+    \multicolumn{1}{r}{} & Total & Long  & Short \\
+    $\rho(MOM(1,1),CAR)$ & -0.043 & 0.531** & 0.706** \\
+    $\rho(MOM(3,1),CAR)$ & -0.074 & 0.095 & 0.034 \\
+    $\rho(MOM(6,1),CAR)$ & -0.035 & 0.048 & -0.004 \\
+    $\rho(MOM(9,1),CAR)$ & 0.074 & -0.128* & 0.038 \\
+    $\rho(MOM(12,1),CAR)$ & 0.027 & 0.027 & 0.021 \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:addlabel}%
+\end{table}%
+
+% Table generated by Excel2LaTeX from sheet 'Table'
+\begin{table}[htbp]
+  \centering
+    \caption{Momentum and Value: Reported below are the Pearson correlation coefficient values for cross-sectional momentum strategies with 1 month holding and the value trade strategy.}
+    \begin{tabular}{lccc}
+    \toprule
+    \multicolumn{1}{r}{} & Total & Long  & Short \\
+    $\rho(MOM(1,1),VAL)$ & -0.157* & 0.664** & 0.752** \\
+    $\rho(MOM(3,1),VAL)$ & 0.038 & 0.041 & 0.111 \\
+    $\rho(MOM(6,1),VAL)$ & 0.016 & -0.031 & 0.023 \\
+    $\rho(MOM(9,1),VAL)$ & -0.095 & -0.117 & -0.042 \\
+    $\rho(MOM(12,1),VAL)$ & 0.020 & -0.055 & 0.048 \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:addlabel}%
+\end{table}%
+
+\begin{table}[htbp]
+  \centering
+  \caption{This table outlines the definitions for the IMF coarse exchange rate classifications.}
+    \begin{tabular}{cp{20.335em}}
+    \toprule
+    1     & No separate legal tender \\
+    1     & Pre announced peg or currency board arrangement \\
+    1     & Pre announced horizontal band that is narrower than or equal to +/-2\% \\
+    1     & De facto peg \\
+    2     & Pre announced crawling peg \\
+    2     & Pre announced crawling band that is narrower than or equal to +/-2\% \\
+    2     & De factor crawling peg \\
+    2     & De facto crawling band that is narrower than or equal to +/-2\% \\
+    3     & Pre announced crawling band that is wider than or equal to +/-2\% \\
+    3     & De facto crawling band that is narrower than or equal to +/-5\% \\
+    3     & Moving band that is narrower than or equal to +/-2\% (i.e., allows for both appreciation and  \\
+          & depreciation over time) \\
+    3     & Managed floating \\
+    4     & Freely floating \\
+    5     & Freely falling \\
+    \bottomrule
+    \end{tabular}%
+  \label{IMFC}%
+\end{table}%
+
+
+\begin{table}[htbp]
+  \centering
+  \begin{adjustwidth}{-3cm}{}
+  \caption{This table shows the exchange rate classifications of the emerging countries from 1999-2020. The information in this table is generated using based on the IMF coarse classification rules outlined in the previous table.}
+    \begin{tabular}{lcccccccccccccccccccccc}
+    \toprule
+          & \multicolumn{1}{r}{99} & \multicolumn{1}{l}{00} & \multicolumn{1}{l}{01} & \multicolumn{1}{l}{02} & \multicolumn{1}{l}{03} & \multicolumn{1}{l}{04} & \multicolumn{1}{l}{05} & \multicolumn{1}{l}{06} & \multicolumn{1}{l}{07} & \multicolumn{1}{l}{08} & \multicolumn{1}{l}{09} & \multicolumn{1}{l}{10} & \multicolumn{1}{l}{11} & \multicolumn{1}{l}{12} & \multicolumn{1}{l}{13} & \multicolumn{1}{l}{14} & \multicolumn{1}{l}{15} & \multicolumn{1}{l}{16} & \multicolumn{1}{l}{17} & \multicolumn{1}{l}{18} & \multicolumn{1}{l}{19} & \multicolumn{1}{l}{20} \\
+    \midrule
+    Algeria & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2 \\
+    Argentina & 1     & 1     & 1     & 5     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 5     & 5     & 5     & 5     & 5 \\
+    Bangladesh & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1 \\
+    Brazil & 5     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3 \\
+    Chile & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3 \\
+    China & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2 \\
+    Colombia & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3 \\
+    Czech Rep. & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2 \\
+    Greece & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1 \\
+    Hungary & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2 \\
+    India & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 3     & 3     & 3     & 3     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2 \\
+    Indonesia & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 3     & 3     & 3     & 3     & 3 \\
+    Israel & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3 \\
+    Kazakhstan & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 5     & 5     & 5     & 5     & 5 \\
+    Korea, Rep. & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3 \\
+    Malaysia & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3 \\
+    Mexico & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3 \\
+    New Zealand & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3 \\
+    Nigeria & 3     & 3     & 3     & 3     & 3     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 5     & 5     & 5     & 5     & 5     & 5 \\
+    Pakistan & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2 \\
+    Peru  & 2     & 2     & 2     & 2     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2 \\
+    Philippines & 3     & 2     & 2     & 2     & 2     & 2     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3 \\
+    Poland & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2 \\
+    Portugal & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1 \\
+    Romania & 5     & 5     & 3     & 3     & 3     & 3     & 3     & 3     & 2     & 2     & 2     & 2     & 2     & 2     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1 \\
+    Russia & 5     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 3     & 3     & 3     & 3     & 3     & 3     & 5     & 5     & 5     & 5     & 5     & 5 \\
+    South Africa & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3 \\
+    Thailand & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3 \\
+    Turkey & 3     & 3     & 5     & 5     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3     & 3 \\
+    Ukraine & 3     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 1     & 5     & 5     & 3     & 3     & 3     & 3     & 3 \\
+    Vietnam & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2     & 2 \\
+    \bottomrule
+    \end{tabular}%
+  \label{IMFX}%
+  \end{adjustwidth}
+\end{table}%
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{Graphs/TickerSizes.png}
+    \caption{This figure shows the number of countries in our emerging universe (blue), emerging universe excluding pegged countries with IMF rating 1 (orange) and emerging universe excluding pegged countries with IMF rating 1 and 2 (green).}
+    \label{TICKERS}
+\end{figure}
+
+\newpage
+
+\end{document}
+
